@@ -1,13 +1,12 @@
 import {createStackNavigator,createAppContainer} from 'react-navigation';
+import React from 'react';
+import {View,Image,Text,Button} from 'react-native';
 import TabNav from './tabNavigator';
-import ClockPage from '../views/clockPages/ClockPage';
-import Mine from '../views/mine/Mine';
-import WorkBench from '../views/workBench/WorkBench';
 
+import ClockPage from '../views/ClockPages/ClockPage';
+import ClockPageDetail from '../views/ClockPages/ClockPageDetail'
+import Colors from '../utils/Colors'
 
-const stackNavigatorConfig = {
-    initialRouteName: 'Root',
-  }
   const RootNav = createStackNavigator({
     Root: {
       screen: TabNav,
@@ -26,39 +25,37 @@ const stackNavigatorConfig = {
         // headerPressColorAndroid：material design中的波纹颜色 (仅支持Android >= 5.0)
         // gesturesEnabled：是否可以使用手势来关闭此页面。 在iOS上默认为true，在Android上默认为false。
         // gestureResponseDistance：一个对象，用以覆盖从屏幕边缘开始触摸到手势被识别的距离。 它具有以下属性：
-        // horizontal - 数值型 - 水平方向的距离，默认值25
-        // vertical - 数值型 - 垂直方向的距离，默认值135.
+              // horizontal - 数值型 - 水平方向的距离，默认值25
+              // vertical - 数值型 - 垂直方向的距离，默认值135.
         // gestureDirection：字符串，用来设置关闭页面的手势方向，默认（default）是从做往右，inverted是从右往左
         return {
-          header: null,
-          headerLeft: null
+          // header: null,
+          headerLeft: null,
+          headerRight: null,
+          headerTitle: null,
         }
       }
     },
-    Clock: {
-        screen: ClockPage,
-        navigationOptions: (options) => {
-            const {navigation} = options;
-            const {state,setParams} = navigation;
-            const {params} = state;
-            return {
-                title: `${options.navigation.state.name}`
-            }
+    ClockPageDetail:{
+      screen: ClockPageDetail,
+      navigationOptions: options => {
+        return {
+          headerTitle: '打卡',
+          headerTitleStyle: {
+            fontSize: 18,
+            color: Colors.textColor,
+            marginLeft: 0
+          },
+          gesturesEnabled: true,
         }
+      }
+    }
+  },{
+    initialRouteName: 'Root',
+    cardStyle: {
     },
-    WorkBench: {
-        screen: WorkBench,
-        navigationOptions: {
-            title: '工作台'
-        }
-    },
-    Mine: {
-        screen: Mine,
-        navigationOptions: options => ({
-            title: '个人中心'
-        })
-    },
-  },stackNavigatorConfig)
+    headerMode: 'float',
+  })
 
 
   export default createAppContainer (RootNav);

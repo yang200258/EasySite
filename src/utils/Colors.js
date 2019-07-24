@@ -1,6 +1,7 @@
 const Colors = {
     mainColor: '#409eff',
-    unMainColor: '#fff'
+    unMainColor: '#fff',
+    textColor: '#aaa',
 }
 
 export default Colors

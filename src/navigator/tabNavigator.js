@@ -1,11 +1,12 @@
 import React from 'react';
-import {Text,DeviceEventEmitter,StyleSheet} from 'react-native';
+import {Text,DeviceEventEmitter,StyleSheet,TouchableOpacity} from 'react-native';
 import Colors from '../utils/Colors'
-import {createBottomTabNavigator} from 'react-navigation';
-import ClockPage from '../views/clockPages/ClockPage';
-import Mine from '../views/mine/Mine';
-import WorkBench from '../views/workBench/WorkBench';
-import MyConsern from '../views/MyConsern/MyConsern';
+import {createBottomTabNavigator,createAppContainer} from 'react-navigation';
+
+import ClockPage from '../views/ClockPages/ClockPage';
+import Mine from '../views/Mine/Mine';
+import WorkBench from '../views/WorkBench/WorkBench';
+import MyConcern from '../views/MyConcern/MyConcern';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -23,12 +24,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // allowFontScaling - 文本字体大小是否可以缩放取决于该设置，默认为true。
 const tabBarOptions = {
     activeTintColor: Colors.mainColor,
-    inactiveTintColor: Colors.unMainColor,
+    inactiveTintColor: Colors.textColor,
     activeBackgroundColor: Colors.unMainColor,
     inactiveBackgroundColor: Colors.unMainColor,
     initialRouteName: 'Clock',
     showIcon: true,
     showLabel: true,
+    labelStyle: {
+        textAlign:'center',
+        fontSize:12
+      },
   }
   const TabNavigatorConfig = {
     tabBarPosition: 'bottom',
@@ -39,46 +44,54 @@ const tabBarOptions = {
   const TabNav = createBottomTabNavigator({
     Clock: {
         screen: ClockPage,
-        navigationOptions: {
+        navigationOptions: options =>{
             /* eslint-disable */
-            tabBarLabel: ({tintColor,focused}) => {
-                return <Text style={{ color: focused ? tintColor : null,textAlign:'center'}}>考勤</Text>
-            },
-            tabBarIcon: ({tintColor,focused}) => {
-                return <FontAwesome name={'calendar'} size={26} style={{color:focused ? tintColor : null}} />
-            },
-            // tabBarOnPress: obj => {
-            //     DeviceEventEmitter.emit('Clock')
-            //     obj.jumpToIndex(obj.scene.index)
-            // }
+            // tabBarLabel: ({tintColor,focused}) => {
+            //     return <Text style={[{ color: focused ? tintColor : null},styles.tabText]}>考勤</Text>
+            // },
+            return {
+                tabBarLabel: '考勤',
+                tabBarIcon: ({tintColor,focused}) => {
+                    return <FontAwesome name={'calendar'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
+                },
+                // tabBarOnPress: obj => {
+                    // DeviceEventEmitter.emit('Clock')
+                    // obj.jumpToIndex(obj.scene.index)
+                // }
+                tabBarButtonComponent: TouchableOpacity
+            }
         }
     },
     WorkBench: {
         screen: WorkBench,
         navigationOptions: {
             /* eslint-disable */
-            tabBarLabel: ({tintColor,focused}) => {
-                return <Text style={{ color: focused ? tintColor : null,textAlign:'center'}}>工作台</Text>
-            },
+            // tabBarLabel: ({tintColor,focused}) => {
+            //     return <Text style={[{ color: focused ? tintColor : null},styles.tabText]}>工作台</Text>
+            // },
+            tabBarLabel: '工作台',
             tabBarIcon: ({tintColor,focused}) => {
-                return <AntDesign name={'setting'} size={26} style={{color:focused ? tintColor : null}} />
+                return <AntDesign name={'setting'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
             },
+            tabBarButtonComponent: TouchableOpacity
             // tabBarOnPress: obj => {
             //     DeviceEventEmitter.emit('workBench')
             //     obj.jumpToIndex(obj.scene.index)
             // }
         }
     },
-    MyConsern: {
-        screen: MyConsern,
+    MyConcern: {
+        screen: MyConcern,
         navigationOptions: {
             /* eslint-disable */
-            tabBarLabel: ({tintColor,focused}) => {
-                return <Text style={{ color: focused ? tintColor : null,textAlign:'center'}}>我的关注</Text>
-            },
+            // tabBarLabel: ({tintColor,focused}) => {
+            //     return <Text style={[{ color: focused ? tintColor : null},styles.tabText]}>我的关注</Text>
+            // },
+            tabBarLabel: '我的关注',
             tabBarIcon: ({tintColor,focused}) => {
-                return <MaterialIcons name={'person-add'} size={26} style={{color:focused ? tintColor : '#666'}} />
+                return <MaterialIcons name={'person-add'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
             },
+            tabBarButtonComponent: TouchableOpacity
             // tabBarOnPress: obj => {
             //     DeviceEventEmitter.emit('workBench')
             //     obj.jumpToIndex(obj.scene.index)
@@ -89,12 +102,14 @@ const tabBarOptions = {
         screen: Mine,
         navigationOptions: {
             /* eslint-disable */
-            tabBarLabel: ({tintColor,focused}) => {
-                return <Text style={{ color: focused ? tintColor : null,textAlign:'center'}}>我</Text>
-            },
+            // tabBarLabel: ({tintColor,focused}) => {
+            //     return <Text style={[{ color: focused ? tintColor : null},styles.tabText]}>我</Text>
+            // },
+            tabBarLabel: '我',
             tabBarIcon: ({tintColor,focused}) => {
-                return <MaterialIcons name={'person-outline'} size={26} style={{color:focused ? tintColor : null}} />
+                return <MaterialIcons name={'person-outline'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
             },
+            tabBarButtonComponent: TouchableOpacity
             // tabBarOnPress: obj => {
             //     DeviceEventEmitter.emit('Mine')
             //     obj.jumpToIndex(obj.scene.index)
@@ -104,10 +119,11 @@ const tabBarOptions = {
   },TabNavigatorConfig)
 
   const styles = StyleSheet.create({
-    textCenter: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    }
+    tabText: {
+        textAlign:'center',
+        fontSize:12
+    },
+    iconSize: 22
   })
 
-  export default TabNav
+  export default createAppContainer(TabNav)
