@@ -8,7 +8,7 @@
 // import React from 'react';
 // import {Text,Image} from 'react-native';
 
-import RootNav from './src/navigator/stackNavigator'
+import RootNav from './src/navigator/stackNavigator';
 
 
 
