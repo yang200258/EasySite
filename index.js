@@ -16,5 +16,4 @@ class Root extends Component {
         )
     }
 }
-
 AppRegistry.registerComponent(appName, () => Root)

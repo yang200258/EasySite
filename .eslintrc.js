@@ -17,11 +17,11 @@ module.exports = {
     "semi": "off",
     "react/prop-types": "off",
     "no-unused-vars": "off",
-    "quotes": [
-      "error",
-      "single",
-      { "allowTemplateLiterals": true }
-    ],
+    // "quotes": [
+    //   "error",
+    //   "single",
+    //   { "allowTemplateLiterals": true }
+    // ],
     "indent": ["off","tab"],
     "linebreak-style": ["off","windows"],
     "react/jsx-indent-props": ["error", 4],

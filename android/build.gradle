@@ -3,10 +3,19 @@
 buildscript {
     ext {
         buildToolsVersion = "28.0.3"
-        minSdkVersion = 16
+        // minSdkVersion = 16             ****修改版本以适用react-native-ble-plx插件
+        minSdkVersion = 18
         compileSdkVersion = 28
         targetSdkVersion = 28
         supportLibVersion = "28.0.0"
+        // dependency versions   
+        // **************配置信息以适用androidX***************
+        // googlePlayServicesVersion = "17.0.0" // default: "16.1.0" - pre-AndroidX, override for AndroidX
+        // compileSdkVersion = "28" // default: 28 (28 is required for AndroidX)
+        // targetSdkVersion = "28" // default: 28 (28 is required for AndroidX)
+        // supportLibVersion = '1.0.2' // Use '28.0.0' or don't specify for old libraries, '1.0.2' or similar for AndroidX
+        // mediaCompatVersion = '1.0.1' // Do not specify if using old libraries, specify '1.0.1' or similar for androidx.media:media dependency
+        // supportV4Version = '1.0.0' // Do not specify if using old libraries, specify '1.0.0' or similar for androidx.legacy:legacy-support-v4 dependency
     }
     repositories {
         google()

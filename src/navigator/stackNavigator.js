@@ -58,4 +58,4 @@ import Colors from '../utils/Colors'
   })
 
 
-  export default createAppContainer (RootNav);
+  export default createAppContainer(RootNav);

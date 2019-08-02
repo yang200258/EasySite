@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View,Button,StyleSheet,TouchableOpacity,Alert,ScrollView } from 'react-native';
+import { Text, View,Button,StyleSheet,TouchableOpacity,Alert,ScrollView,StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Clendar from '../../components/Calendar'
+import Clendar from '../../components/Calendar';
 import Colors from '../../utils/Colors';
-import utils from '../../utils/utils'
+import utils from '../../utils/utils';
+// 悬浮按钮组件
+import ActionButton from 'react-native-action-button';
+
+
 class ClockPage extends Component {
     constructor(props) {
         super(props);
@@ -25,16 +29,18 @@ class ClockPage extends Component {
         markedDay[this.state.day] = this.markedStyle
         return (
             <View style={styles.clockContainer} screenProps={{day:this.state.day}}>
+                <StatusBar backgroundColor="blue" barStyle="light-content" hidden={true}/>
                 {/* 日历区域 */}
                 <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View>
                 {/* 打卡区域 */}
                 <View style={styles.clockFingerContainer}>
-                    <TouchableOpacity style={styles.clockFinger} onPress={() => {
-                        navigation.navigate('ClockPageDetail')
-                    }}>
-                        <Ionicons name={'md-finger-print'} size={30} style={styles.iconStyle}></Ionicons>
-                        <Text style={styles.clockText}>打卡</Text>
-                    </TouchableOpacity>
+                    <ActionButton
+                        buttonColor={Colors.mainColor}
+                        onPress={() => { navigation.navigate('ClockPageDetail')}}
+                        renderIcon={() => (<View><Ionicons name={'md-finger-print'} size={30} style={styles.iconStyle}></Ionicons>
+                            <Text style={styles.clockText}>打卡</Text>
+                        </View>)}
+                    />
                 </View>
             </View>
         )
@@ -50,25 +56,15 @@ const styles = StyleSheet.create({
         height: 100, 
         position: 'absolute',
         bottom: 0,
-        right: 0
+        right: 0,
+        
     },  
-    clockFinger: {
-        backgroundColor: Colors.mainColor,
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius:50,
-    },
     iconStyle: {
         color: '#fff',
     },
     clockText: {
         color:'#fff',
         fontSize:12,
-    }
+    },
 })
 export default ClockPage
