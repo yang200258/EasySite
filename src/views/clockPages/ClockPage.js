@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View,Button,StyleSheet,TouchableOpacity,Alert,ScrollView,StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Clendar from '../../components/Calendar';
+// import Clendar from '../../components/Calendar';
 import Colors from '../../utils/Colors';
 import utils from '../../utils/utils';
 // 悬浮按钮组件
@@ -31,7 +31,7 @@ class ClockPage extends Component {
             <View style={styles.clockContainer} screenProps={{day:this.state.day}}>
                 <StatusBar backgroundColor="blue" barStyle="light-content" hidden={true}/>
                 {/* 日历区域 */}
-                <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View>
+                {/* <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View> */}
                 {/* 打卡区域 */}
                 <View style={styles.clockFingerContainer}>
                     <ActionButton

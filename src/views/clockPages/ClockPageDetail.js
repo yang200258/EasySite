@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,DeviceEventEmitter } from 'react-native';
 // 查看设备信息
 import BleManager from 'react-native-ble-manager';
-import Buffer from 'buffer/'
+import {Buffer} from 'buffer/'
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
@@ -32,24 +32,18 @@ class ClockPageDetail extends Component {
                 // 开始扫描
                 await BleManager.scan([], 5, true)
                 //搜索到一个新设备监听
-                bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', (data) => {
-                    console.log('BleManagerDiscoverPeripheral:', data);
+                bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', (device) => {
+                    console.log('BleManagerDiscoverPeripheral:', device);
                     let id;  //蓝牙连接id
                     let macAddress;  //蓝牙Mac地址            
-                    if(Platform.OS == 'android' && data.name){
+                    if(Platform.OS == 'android' && device.name){
                         BleManager.stopScan().then(() => {
-                            macAddress = data.id;
-                            id = macAddress; 
-                            // const {bytes,data} = data.advertising.manufacturerData
-                            // let str = '';
-                            // for(let i = 0;i<bytes.length;i++) {
-                            //     let tmp = bytes[i].toString(16);
-                            //     if(tmp.length == 1) {
-                            //         tmp = "0" + tmp;
-                            //     }
-                            //     str += tmp
-                            // }
-                            // let arr = [];
+                            macAddress = device.id;
+                            id = macAddress;
+                            const {bytes,data} = device.advertising.manufacturerData
+                            const buffer = Buffer.from(data,'base64')
+                            const buffer2 = Buffer.from(bytes.slice(0,4),'base64')
+                            console.log(buffer.toString(),buffer2.toString());
                         });
                     }
 
@@ -57,7 +51,7 @@ class ClockPageDetail extends Component {
                         //ios连接时不需要用到Mac地址，但跨平台识别是否是同一设备时需要Mac地址
                         //如果广播携带有Mac地址，ios可通过广播0x18获取蓝牙Mac地址，
                         // macAddress = getMacAddressFromIOS(data);
-                        id = data.id;
+                        id = device.id;
                     }            
                 });
             } else {

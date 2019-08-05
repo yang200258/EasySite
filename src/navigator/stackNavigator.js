@@ -7,10 +7,42 @@ import ClockPage from '../views/ClockPages/ClockPage';
 import ClockPageDetail from '../views/ClockPages/ClockPageDetail'
 import Colors from '../utils/Colors'
 
+
   const RootNav = createStackNavigator({
     Root: {
       screen: TabNav,
       navigationOptions: options => {
+        return {
+          header: null,
+        }
+      }
+    },
+    ClockPageDetail:{
+      screen: ClockPageDetail,
+      navigationOptions: options => {
+        return {
+          header: null,
+          // headerTitle: '打卡',
+          // headerTitleStyle: {
+          //   fontSize: 18,
+          //   color: Colors.textColor,
+          //   marginLeft: 0
+          // },
+          // gesturesEnabled: true,
+        }
+      }
+    }
+  },{
+    initialRouteName: 'Root',
+    // cardStyle: {},
+    headerMode: 'screen',
+    headerBackTitle: null,
+  })
+
+
+  export default createAppContainer(RootNav);
+
+  // navigationOptions: options => {
         // title：可当作headerTitle的备用的字符串。
         // header：可以是React元素或给定了HeaderProps然后返回一个React元素的函数，显示为标题。
         // headerTitle： 字符串、React元素或被当作标题的React组件。
@@ -28,34 +60,9 @@ import Colors from '../utils/Colors'
               // horizontal - 数值型 - 水平方向的距离，默认值25
               // vertical - 数值型 - 垂直方向的距离，默认值135.
         // gestureDirection：字符串，用来设置关闭页面的手势方向，默认（default）是从做往右，inverted是从右往左
-        return {
+        // return {
           // header: null,
-          headerLeft: null,
-          headerRight: null,
-          headerTitle: null,
-        }
-      }
-    },
-    ClockPageDetail:{
-      screen: ClockPageDetail,
-      navigationOptions: options => {
-        return {
-          headerTitle: '打卡',
-          headerTitleStyle: {
-            fontSize: 18,
-            color: Colors.textColor,
-            marginLeft: 0
-          },
-          gesturesEnabled: true,
-        }
-      }
-    }
-  },{
-    initialRouteName: 'Root',
-    cardStyle: {
-    },
-    headerMode: 'float',
-  })
-
-
-  export default createAppContainer(RootNav);
+          // headerLeft: null,
+          // headerRight: null,
+          // headerTitle: 'vfda',
+        // }

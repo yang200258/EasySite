@@ -5,12 +5,16 @@
  * @flow
  */
 
-// import React from 'react';
+import React,{Component} from 'react';
 // import {Text,Image} from 'react-native';
 
 import RootNav from './src/navigator/stackNavigator';
 
+export default class App extends Component {
+    render() {
+        return (
+           <RootNav /> 
+        )
+    }
+}
 
-
-
-export default RootNav;
