@@ -5,6 +5,8 @@ import BleManager from 'react-native-ble-manager';
 import {Buffer} from 'buffer/'
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+import WifiManager from 'react-native-wifi';
+import axios from '../../utils/request'
 
 
 class ClockPageDetail extends Component {
@@ -48,11 +50,9 @@ class ClockPageDetail extends Component {
                     }
 
                         else{  
+                        // TODO: 后续ios时配置获取数据
                         //ios连接时不需要用到Mac地址，但跨平台识别是否是同一设备时需要Mac地址
-                        //如果广播携带有Mac地址，ios可通过广播0x18获取蓝牙Mac地址，
-                        // macAddress = getMacAddressFromIOS(data);
-                        id = device.id;
-                    }            
+                    }        
                 });
             } else {
                 console.log('蓝牙已关闭')
@@ -63,8 +63,20 @@ class ClockPageDetail extends Component {
     }
     getWifiList = async() => {
         // 获取wifi  mac
-        // const bssid = await NetworkInfo.getBSSID();
-        // console.log('bssid',bssid);
+        WifiManager.loadWifiList(res => {
+            let wifiList = JSON.parse(res)
+            wifiList.forEach(async (item) => {
+                let res = await axios({url: '/api/clock/wifi/_check',method: 'post',data:{mac:item.BSSID}})
+                if(res.token) {
+                    console.log(res)
+                    return;
+                }
+            })
+        },
+        err=> {
+            console.log(err);
+        })
+        
     }
     render() {
         return (

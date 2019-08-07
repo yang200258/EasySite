@@ -1,7 +1,8 @@
 import React from 'react';
 import {Text,DeviceEventEmitter,StyleSheet,TouchableOpacity} from 'react-native';
 import Colors from '../utils/Colors'
-import {createBottomTabNavigator} from 'react-navigation';
+import {createBottomTabNavigator,createAppContainer} from 'react-navigation';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import ClockPage from '../views/ClockPages/ClockPage';
 import Mine from '../views/Mine/Mine';
@@ -22,25 +23,18 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // labelStyle - tab bar的文本样式
 // tabStyle - tab页的样式
 // allowFontScaling - 文本字体大小是否可以缩放取决于该设置，默认为true。
-  const TabNav = createBottomTabNavigator({
+  const TabNav = createMaterialBottomTabNavigator({
     Clock: {
         screen: ClockPage,
         navigationOptions: {
             /* eslint-disable */
             // gestureResponseDistance: {horizontal: 20},
-            title: '2019-08-05',
+            headerTitle : '2019-08-05',
             tabBarLabel: '考勤',
             tabBarIcon: ({tintColor,focused}) => {
                 return <FontAwesome name={'calendar'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
             },
             tabBarButtonComponent: TouchableOpacity,
-            headerStyle: {
-                backgroundColor: '#409eff',
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
         }
     },
     WorkBench: {
@@ -80,27 +74,32 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
         }
     },
   },{
-    tabBarPosition: 'bottom',
-    swipeEnabled: true,
-    animationEnabled: true,
-    backBehavior: "none",
-    tabBarOptions: {
-        upperCaseLabel: false,//是否使标签大写，默认为true
-        activeTintColor: Colors.mainColor,
-        inactiveTintColor: Colors.textColor,
-        activeBackgroundColor: Colors.unMainColor,
-        inactiveBackgroundColor: Colors.unMainColor,
-        initialRouteName: 'Clock',
-        showIcon: true,
-        showLabel: true,
-        labelStyle: {
-            textAlign:'center',
-            fontSize:12
-          },
-        indicatorStyle: {//标签指示器的样式对象（选项卡底部的行）。安卓底部会多出一条线，可以将height设置为0来暂时解决这个问题
-            height: 0,
-        },
-      },
+    labeled: true,
+    shifting: false,
+    activeColor: Colors.mainColor,
+    inactiveColor: Colors.textColor,
+    barStyle: { backgroundColor: '#fff' },
+    // tabBarPosition: 'bottom',
+    // swipeEnabled: true,
+    // animationEnabled: true,
+    // backBehavior: "none",
+    // tabBarOptions: {
+    //     upperCaseLabel: false,//是否使标签大写，默认为true
+    //     activeTintColor: Colors.mainColor,
+    //     inactiveTintColor: Colors.textColor,
+    //     activeBackgroundColor: Colors.unMainColor,
+    //     inactiveBackgroundColor: Colors.unMainColor,
+    //     initialRouteName: 'Clock',
+    //     showIcon: true,
+    //     showLabel: true,
+    //     labelStyle: {
+    //         textAlign:'center',
+    //         fontSize:12
+    //       },
+    //     indicatorStyle: {//标签指示器的样式对象（选项卡底部的行）。安卓底部会多出一条线，可以将height设置为0来暂时解决这个问题
+    //         height: 0,
+    //     },
+    //   },
   })
 
   const styles = StyleSheet.create({

@@ -9,31 +9,29 @@ import Colors from '../utils/Colors'
 
 
   const RootNav = createStackNavigator({
-    Root: {
+    Tab: {
       screen: TabNav,
-      navigationOptions: options => {
-        return {
-          header: null,
-        }
+      navigationOptions: {
+        header: null
       }
     },
     ClockPageDetail:{
       screen: ClockPageDetail,
       navigationOptions: options => {
         return {
-          header: null,
-          // headerTitle: '打卡',
-          // headerTitleStyle: {
-          //   fontSize: 18,
-          //   color: Colors.textColor,
-          //   marginLeft: 0
-          // },
-          // gesturesEnabled: true,
+          // header: null,
+          headerTitle: '打卡',
+          headerTitleStyle: {
+            fontSize: 18,
+            color: Colors.textColor,
+            marginLeft: 0
+          },
+          gesturesEnabled: true,
         }
       }
     }
   },{
-    initialRouteName: 'Root',
+    initialRouteName: 'Tab',
     // cardStyle: {},
     headerMode: 'screen',
     headerBackTitle: null,

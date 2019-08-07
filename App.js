@@ -10,6 +10,8 @@ import React,{Component} from 'react';
 
 import RootNav from './src/navigator/stackNavigator';
 
+// import RootNav from './src/navigator/tabNavigator';
+
 export default class App extends Component {
     render() {
         return (
