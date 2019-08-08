@@ -1,6 +1,6 @@
 
 
-let common_url = '';
+let common_url = 'http://10.28.128.123:8080/';
 let token = '';
 
 const fetchRequest = async (url,method,params='') => {

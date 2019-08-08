@@ -6,8 +6,6 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Colors from '../../utils/Colors';
 import utils from '../../utils/utils';
 import NavigationBar from '../../components/NavigationBar';
-// 悬浮按钮组件
-import ActionButton from 'react-native-action-button';
 
 
 class ClockPage extends Component {
@@ -21,7 +19,7 @@ class ClockPage extends Component {
         return <TouchableOpacity 
             onPress={() => {
                 Alert.alert('进入消息提示页面！')
-            }} style={styles.messageContainer}>
+            }}>
                 <EvilIcons name={'bell'} size={30} style={styles.messageIcon}></EvilIcons>
                 <Text style={styles.messageNum}>{3}</Text>
         </TouchableOpacity>
@@ -43,15 +41,10 @@ class ClockPage extends Component {
                 {/* 日历区域 */}
                 {/* <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View> */}
                 {/* 打卡区域 */}
-                <View style={styles.clockFingerContainer}>
-                    <ActionButton
-                        buttonColor={Colors.mainColor}
-                        onPress={() => { navigation.navigate('ClockPageDetail')}}
-                        renderIcon={() => (<View><Ionicons name={'md-finger-print'} size={30} style={styles.iconStyle}></Ionicons>
-                            <Text style={styles.clockText}>打卡</Text>
-                        </View>)}
-                    />
-                </View>
+                {/* <TouchableOpacity style={styles.clockFingerContainer} onPress={() => { navigation.navigate('ClockPageDetail')}}>
+                    <Ionicons name={'md-finger-print'} size={30} style={styles.iconStyle}></Ionicons>
+                    <Text style={styles.clockText}>打卡</Text>
+                </TouchableOpacity> */}
             </View>
         )
     }
@@ -67,7 +60,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        
     },  
     iconStyle: {
         color: '#fff',
@@ -75,9 +67,6 @@ const styles = StyleSheet.create({
     clockText: {
         color:'#fff',
         fontSize:12,
-    },
-    messageContainer:{
-
     },
     messageIcon: {
         color: Colors.mainColor

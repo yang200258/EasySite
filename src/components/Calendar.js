@@ -1,11 +1,11 @@
-import {Agenda } from 'react-native-calendars';
+// import {Agenda } from 'react-native-calendars';
 import React,{Component} from 'react'
 import {View} from 'react-native'
 class Calendar extends Component {
     render() {
         return(
             <View style={{height:'100%'}}>
-                <Agenda
+                {/* <Agenda
                     // the list of items that have to be displayed in agenda. If you want to render item as empty date
                     // the value of date key kas to be an empty array []. If there exists no value for date key it is
                     // considered that the date in question is not yet loaded
@@ -72,7 +72,7 @@ class Calendar extends Component {
                     }}
                     // agenda container style
                     style={{height:300}}
-                    />
+                    /> */}
             </View>
         )
     }

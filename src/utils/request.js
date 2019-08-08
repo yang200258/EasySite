@@ -5,12 +5,13 @@ import axios from 'axios';
 let token = '';
 // 超时设置
 const service = axios.create({
+    baseURL: 'http://10.28.128.123:8080/',
     // 请求超时时间
     timeout: 5000,
 });
 
 // baseURL
-axios.defaults.baseURL = 'http://10.28.128.123:8080/';
+// axios.defaults.baseURL = 'http://10.28.128.123:8080/';
 
 
 // http request 拦截器
@@ -20,8 +21,8 @@ service.interceptors.request.use(
         if (token) {
             config.headers['x-token'] = token
         }
-        // config.headers['Cache-Control'] = 'no-cache'
-        // config.headers['Pragma'] = 'no-cache'
+        config.headers['Cache-Control'] = 'no-cache'
+        config.headers['Pragma'] = 'no-cache'
         console.log('config', config);
         return config
     },
@@ -38,7 +39,7 @@ service.interceptors.response.use(
         return Promise.resolve(response.data)
     },
     error => {
-        console.log('登录异常', error);
+        console.log('err', error);
         if (axios.isCancel(error)) {
             console.log(error)
             return Promise.reject("Ajax Abort: 该请求在axios拦截器中被中断")
