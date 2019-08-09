@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,DeviceEventEmitter } from 'react-native';
+import ClockDetailContent from '../../components/Clock/ClockDetailContent'
 // 查看设备信息
 import BleManager from 'react-native-ble-manager';
 import axios from '../../utils/request'
@@ -101,17 +102,14 @@ class ClockPageDetail extends Component {
     _dealDevic = (device) => {
         const {bytes,data} = device.advertising.manufacturerData
         let hexString = this.bytesToHexString(bytes)
-        // console.log(hexString);
         // ibeacon的UUID值
         let uuid = hexString.substring(18, 26) + "-"
                 + hexString.substring(26, 30) + "-"
                 + hexString.substring(30, 34) + "-"
                 + hexString.substring(34, 38) + "-"
                 + hexString.substring(38, 50);
-        // console.log(uuid)
         let major = parseInt(hexString.substring(50, 54),16)
         let minor = parseInt(hexString.substring(54, 58),16)
-        // console.log(major,minor)
         return {uuid,major,minor}
     }
     bytesToHexString = (arr) => {
@@ -153,7 +151,7 @@ class ClockPageDetail extends Component {
     render() {
         return (
             <View style={{height:'100%'}}>
-                <Text>Hello, ClockPa16510505geDetail!</Text>
+                <ClockDetailContent />
             </View>
         )
     }
