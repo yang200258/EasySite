@@ -23,8 +23,7 @@ const styles = StyleSheet.create({
     tagContainer: {
         height: 70,
         marginLeft: 30,
-        marginRight: 20,
-        width:'100%',
+        marginRight: 50,
         backgroundColor: Colors.mainColor,
         flexDirection: 'row',
         borderBottomLeftRadius: 10,

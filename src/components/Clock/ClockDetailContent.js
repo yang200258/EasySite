@@ -11,9 +11,11 @@ class ClockDetailContent extends Component {
                     <View style={styles.line}></View>
                     <View style={styles.dot}></View>
                 </View>
-                <View>
-                    <ClockDetailTag style={styles.space} data={{state:'签到',time:'08:23',location:'海南大厦25楼门口左'}}/>
+                <View style={styles.rightWrapper}>
+                    <ClockDetailTag data={{state:'签到',time:'08:23',location:'海南大厦25楼门口左'}}/>
+                    <View style={styles.space}/>
                     <ClockDetailTag data={{state:'签退',time:'05:23',location:'海南大厦25楼门口左'}}/>
+                    <Text style={styles.tipText}>以最晚的打卡为准，后一条签退记录会覆盖前一条</Text>
                 </View>
             </View>
         )
@@ -24,6 +26,7 @@ const styles = StyleSheet.create({
     clockContent:{
         flexDirection: 'row',
         height: 180,
+        width: '100%',
     },
     leftWrapper:{
         width:30,
@@ -43,10 +46,18 @@ const styles = StyleSheet.create({
     line: {
         height: 106,
         width: 2,
-        backgroundColor: '#ccc'
+        backgroundColor: '#ddd'
     },
     space: {
-        marginBottom: 40
+        height: 40
+    },
+    tipText: {
+        fontSize: 10,
+        marginLeft: 30,
+        color: '#aaa'
+    },
+    rightWrapper:{
+        width: '100%'
     }
 })
 
