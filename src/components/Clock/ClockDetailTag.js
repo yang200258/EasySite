@@ -22,8 +22,8 @@ class ClockDetailTag extends Component {
 const styles = StyleSheet.create({
     tagContainer: {
         height: 70,
-        marginLeft: 30,
-        marginRight: 50,
+        marginLeft: 20,
+        marginRight: 70,
         backgroundColor: Colors.mainColor,
         flexDirection: 'row',
         borderBottomLeftRadius: 10,

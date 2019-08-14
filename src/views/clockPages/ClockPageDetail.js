@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,DeviceEventEmitter } from 'react-native';
+import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,StyleSheet,TouchableOpacity } from 'react-native';
+import {Divider} from 'react-native-paper'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import ClockDetailContent from '../../components/Clock/ClockDetailContent'
+import Colors from '../../utils/Colors';
 // 查看设备信息
 import BleManager from 'react-native-ble-manager';
 import axios from '../../utils/request'
@@ -34,6 +37,7 @@ class ClockPageDetail extends Component {
     _getDeviceInfo = async () => {
         // this.timer = setTimeout(()=> {this.getWifiList()},3000)
         // this.getWifiList()
+        // setTimeout(()=> {this.setState({canClock: true})},3000)
         this._getBluetoothList()
     }
     _getBluetoothList = async () => {
@@ -148,13 +152,84 @@ class ClockPageDetail extends Component {
             console.log(err);
         })
     }
+    //打卡
+    _handleClock = () => {
+
+    }
+    //显示发送报告
+    _showSendProblem = () => {
+        
+    }
     render() {
+        let showIcon = ((!this.state.scanWifi && !this.state.scanBluetooth) || this.state.canClock) ? false : true;
         return (
-            <View style={{height:'100%'}}>
-                <ClockDetailContent />
+            <View style={{flex: 1}}>
+                <View style={{flex: 3, backgroundColor: '#fdfdfd',justifyContent: 'center'}}>
+                    <ClockDetailContent />
+                </View>
+                <Divider />
+                <View style={{flex: 1, backgroundColor: '#fff',alignItems: 'center',justifyContent: 'center'}}>
+                    <View style={{flexDirection: 'row',marginBottom:6,justifyContent: 'center',alignItems: 'center'}}>
+                        <Text style={styles.tipText}>{!this.state.canClock ? '搜索中...' : '您当前已在打卡范围内'}</Text>
+                        <AntDesign name={'exclamationcircleo'} size={16} style={[styles.iconStyle,showIcon ? null : styles.hide]} onPress={this._sendProblem}/>
+                    </View>
+                    <TouchableOpacity style={[styles.clockFingerWrapper,this.state.canClock ? styles.canClock : null]} onPress={() => this._handleClock()}>
+                        <Text style={[styles.clockTime,this.state.canClock ? styles.canClockText : null]}>13:53</Text>
+                        <Text style={[styles.clockText,this.state.canClock ? styles.canClockText : null]}>打卡</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    clockFingerWrapper:{
+        width: 100,
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.unClockColor,
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+    },
+    tipText: {
+        color: Colors.mainColor,
+        height: 30,
+        borderWidth: 1,
+        borderColor: Colors.mainColor,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+        lineHeight: 30,
+        textAlign: 'center',
+        paddingHorizontal: 6
+    },
+    iconStyle: {
+        color: 'red',
+        marginLeft: 4,
+    },
+    clockTime: {
+        color:'#cdcdcd',
+        fontSize:16,
+        marginBottom: 6
+    },  
+    clockText: {
+        color:'#cdcdcd',
+        fontSize:20,
+    },
+    canClock: {
+        backgroundColor: Colors.mainColor,
+    },
+    canClockText: {
+        color: '#fff'
+    },
+    hide: {
+        display: 'none'
+    }
+})
 
 export default ClockPageDetail

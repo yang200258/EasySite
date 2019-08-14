@@ -1,8 +1,7 @@
 import axios from 'axios';
 // import { Alert } from 'react-native'
+import StorageUtil from './storage';
 
-
-let token = '';
 // 超时设置
 const service = axios.create({
     baseURL: 'http://10.28.128.123:8080/',
@@ -17,12 +16,11 @@ const service = axios.create({
 // http request 拦截器
 // 每次请求都为http头增加Authorization字段，其内容为token
 service.interceptors.request.use(
-    config => {
+    async config => {
+        let token = await StorageUtil.get('loginToken')
         if (token) {
             config.headers['x-token'] = token
         }
-        config.headers['Cache-Control'] = 'no-cache'
-        config.headers['Pragma'] = 'no-cache'
         console.log('config', config);
         return config
     },

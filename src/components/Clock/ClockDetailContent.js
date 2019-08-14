@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     leftWrapper:{
         width:30,
         height: 180,
+        marginLeft:20,
         alignItems: 'center',
         justifyContent: 'center',
     },
