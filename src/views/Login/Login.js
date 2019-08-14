@@ -3,7 +3,8 @@ import {Text,View,TouchableOpacity} from 'react-native';
 import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
-import StorageUtil from '../../utils/storage'
+import StorageUtil from '../../utils/storage';
+import SplashScreen from 'react-native-splash-screen';
 const theme = {
     colors: {
       ...DefaultTheme.colors,
@@ -21,6 +22,9 @@ class Login extends Component {
             showTip: false,
             tipText: ''
         }
+    }
+    componentDidMount() {
+        SplashScreen.hide();
     }
     // 输入用户名事件
     _setUserName = (username) => {

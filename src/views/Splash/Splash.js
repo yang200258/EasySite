@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet,Platform,Dimensions } from 'react-native';
 import Colors from '../../utils/Colors'
-const imageBg = require('../../assets/image/splash.png');
+// const imageBg = require('../../assets/image/splash.png');
 
 // iPhoneX 
 const X_WIDTH = 375; 
@@ -37,10 +37,10 @@ class Splash extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Image
+                {/* <Image
                     source={imageBg}
                     resizeMode='cover'
-                    style={{ flex: 1, width: SCREEN_WIDTH }}></Image>
+                    style={{ flex: 1, width: SCREEN_WIDTH }}></Image> */}
                 <View style={styles.buttonStyle}>
                     <Text style={{color:'#000',fontSize:15}}>{this.count}s</Text>
                 </View>

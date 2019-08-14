@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Text,View,StyleSheet,TouchableOpacity,Alert,ScrollView,StatusBar } from 'react-native';
+import {  Text,View,StyleSheet,TouchableOpacity,Alert,ScrollView,StatusBar,Platform,PermissionsAndroid } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 // import Clendar from '../../components/Calendar';
@@ -7,6 +7,7 @@ import Colors from '../../utils/Colors';
 import utils from '../../utils/utils';
 import NavigationBar from '../../components/NavigationBar';
 import {  IconButton } from 'react-native-paper';
+import NavigationUtil from '../../navigator/NavigationUtil'
 
 
 class ClockPage extends Component {
@@ -22,8 +23,30 @@ class ClockPage extends Component {
                 <Text style={styles.messageNum}>{3}</Text>
         </TouchableOpacity>
     }
+    _handleColock = () => {
+        this._getPermission()
+        NavigationUtil.go('ClockPageDetail')
+    }
+    _getPermission = () => {
+        if (Platform.OS === 'android' && Platform.Version >= 23) {
+            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
+                if (result) {
+                  console.log("Permission is OK");
+                } else {
+                  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
+                    if (result) {
+                      console.log("User accept");
+                    } else {
+                      console.log("User refuse");
+                    }
+                  });
+                }
+          });
+        }
+    }
     render() {
         const {navigation} = this.props
+        NavigationUtil.navigation = this.props.navigation
         let statusBar = {
             barStyle: 'dark-content',
             backgroundColor: Colors.navColor,
@@ -40,7 +63,7 @@ class ClockPage extends Component {
                 {/* <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View> */}
                 {/* 打卡区域 */}
                 <View style={styles.clockFingerContainer}>
-                    <TouchableOpacity style={styles.clockFingerWrapper} onPress={() => { navigation.navigate('ClockPageDetail')}}>
+                    <TouchableOpacity style={styles.clockFingerWrapper} onPress={() => { this._handleColock()}}>
                         <Ionicons name={'md-finger-print'} size={30} style={styles.iconStyle}></Ionicons>
                         <Text style={styles.clockText}>打卡</Text>
                     </TouchableOpacity>

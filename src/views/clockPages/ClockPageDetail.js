@@ -37,7 +37,6 @@ class ClockPageDetail extends Component {
     _getDeviceInfo = async () => {
         // this.timer = setTimeout(()=> {this.getWifiList()},3000)
         // this.getWifiList()
-        // setTimeout(()=> {this.setState({canClock: true})},3000)
         this._getBluetoothList()
     }
     _getBluetoothList = async () => {
@@ -89,15 +88,18 @@ class ClockPageDetail extends Component {
         }
     }
     //监听扫描到设备
-    _handleDiscoverPeripheral = (device) => {
+    _handleDiscoverPeripheral = async (device) => {
         console.log('BleManagerDiscoverPeripheral:', device);
         let mac;  //蓝牙Mac地址            
         if(Platform.OS == 'android' && device.name){
-            BleManager.stopScan().then(() => {
-                mac = device.id;
-                let {uuid,major,minor} = this._dealDevic(device)
-                console.log(mac,uuid,major,minor);
-            });
+            mac = device.id;
+            let {uuid,major,minor} = this._dealDevic(device)
+            console.log(mac,uuid,major,minor);
+            let res = await axios({url: '/api/clock/bluetooth/_check',method: 'post',data: {mac,uuid,major,minor}})
+            if(res && res.token) {
+                this.setState({canClock:true,scanBluetooth: false})
+                BleManager.stopScan()
+            }
         } else{  
             // TODO: 后续ios时配置获取数据
             //ios连接时不需要用到Mac地址，但跨平台识别是否是同一设备时需要Mac地址

@@ -6,7 +6,7 @@ import TabNav from './tabNavigator';
 
 import ClockPage from '../views/ClockPages/ClockPage';
 import ClockPageDetail from '../views/ClockPages/ClockPageDetail';
-import Splash from '../views/Splash/Splash';
+// import Splash from '../views/Splash/Splash';
 import Login from '../views/Login/Login';
 
 import Colors from '../utils/Colors';
@@ -18,12 +18,12 @@ StorageUtil.get('loginToken').then(res => {
 })
 
   const RootNav = createStackNavigator({
-    Splash: {
-      screen: Splash,
-      navigationOptions: {
-        header: null
-      }
-    },
+    // Splash: {
+    //   screen: Splash,
+    //   navigationOptions: {
+    //     header: null
+    //   }
+    // },
     Login: {
       screen: Login,
       navigationOptions: {
@@ -65,7 +65,6 @@ StorageUtil.get('loginToken').then(res => {
   })
   const defaultGetStateForAction = RootNav.router.getStateForAction;
   RootNav.router.getStateForAction = (action, state) => {
-    console.log(action, state);
       //页面是Tab并且 global.user.loginState = false || ''（未登录）
       if (action.routeName === 'Tab' && !loginStatus) {
           let routes = [
