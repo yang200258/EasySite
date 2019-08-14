@@ -11,9 +11,6 @@ import NavigationUtil from '../../navigator/NavigationUtil'
 
 
 class ClockPage extends Component {
-    constructor(props) {
-        super(props);
-      }
     renderMessageButton = () => {
         return <TouchableOpacity 
             onPress={() => {

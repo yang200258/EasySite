@@ -12,36 +12,52 @@ import WifiManager from 'react-native-wifi';
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+
 class ClockPageDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            canClock: false,
+            onBluetooth: false,
+            onWifi: false,
             scanWifi: false,
             scanBluetooth: false,
+            canClock: false,
+            clockToken: '',
+            date: '',
         }
         this._handleDiscoverPeripheral = this._handleDiscoverPeripheral.bind(this);
         this._handleStopScan = this._handleStopScan.bind(this);
         this._handleBluetoothUpdateState = this._handleBluetoothUpdateState.bind(this);
     }
     componentDidMount(){
+        this._setDateTime()
+        this.intervalTime = setInterval(this._setDateTime,1000)
         this._getDeviceInfo()
     }
+    _setDateTime = () => {
+        this.setState(previousState => {
+            let time = new Date().toTimeString().split(' ')[0].split(':') 
+            return { date: `${time[0]}:${time[1]}` }
+        });
+    }
     componentWillUnmount() {
-        clearTimeout(this.timer)
+        clearInterval(this.intervalWifi)
+        clearInterval(this.intervalTime)
         this.handleUpdateState.remove()
         this.handlerDiscover.remove()
         this.handlerStop.remove()
     }
     //获取蓝牙、WIFI列表信息
     _getDeviceInfo = async () => {
-        // this.timer = setTimeout(()=> {this.getWifiList()},3000)
-        // this.getWifiList()
+        //判断、申请权限
+        this._getPermission()
+        this.getWifiList()
+        this.intervalWifi = setInterval(()=> {
+            if(!this.state.canClock && !this.state.scanWifi) this.getWifiList()
+        },1000)
         this._getBluetoothList()
     }
     _getBluetoothList = async () => {
-        //判断、申请权限
-        this._getPermission()
         //开启蓝牙功能
         await BleManager.start({showAlert: false})
         //检查蓝牙状态，回调为 this.handleUpdateState
@@ -75,8 +91,11 @@ class ClockPageDetail extends Component {
         console.log('BleManagerDidUpdateStatea:', args);
         if(args.state == 'on' ){  //蓝牙已打开
             console.log('蓝牙已打开')
+            this.setState({onBluetooth: true})
             // 开始扫描
             this.startScan()
+        } else {
+            this.setState({onBluetooth: false})
         }
     }
     //扫描
@@ -93,11 +112,11 @@ class ClockPageDetail extends Component {
         let mac;  //蓝牙Mac地址            
         if(Platform.OS == 'android' && device.name){
             mac = device.id;
-            let {uuid,major,minor} = this._dealDevic(device)
+            let {uuid,major,minor} = await this._dealDevic(device)
             console.log(mac,uuid,major,minor);
             let res = await axios({url: '/api/clock/bluetooth/_check',method: 'post',data: {mac,uuid,major,minor}})
             if(res && res.token) {
-                this.setState({canClock:true,scanBluetooth: false})
+                this.setState({canClock:true,scanBluetooth: false, clockToken:res.token})
                 BleManager.stopScan()
             }
         } else{  
@@ -137,18 +156,28 @@ class ClockPageDetail extends Component {
     getWifiList = () => {
         WifiManager.isEnabled((isEnabled) => {
             if (isEnabled) {
-              console.log("wifi service enabled");
+              console.log("wifi 打开");
+              this.setState({onWifi: true,scanWifi:true})
               this.scanWifiList()
             } else {
-              console.log("wifi service is disabled");
+                this.setState({onWifi: false})
+                console.log("wifi 关闭");
             }
           });
     }
     scanWifiList = () => {
         WifiManager.reScanAndLoadWifiList( async(res) => {
             let wifiList = JSON.parse(res)
-            let rp = await axios({url: '/api/clock/wifi/_check',method: 'get',data:{mac:wifiList[0].BSSID}})
-            console.log(wifiList)
+            console.log('wifiList:',wifiList)
+            for(let i = 0;i<wifiList.length;i++) {
+                let respond = await axios({url: '/api/clock/wifi/_check',method: 'post',data:{mac:wifiList[i].BSSID}})
+                console.log('wifi扫描设备请求后返回信息：',respond)
+                if(respond && respond.token) {
+                    this.setState({canClock: true,clockToken:respond.token})
+                    break
+                }
+            }
+            this.setState({scanWifi:false})
         },
         err=> {
             console.log(err);
@@ -156,7 +185,7 @@ class ClockPageDetail extends Component {
     }
     //打卡
     _handleClock = () => {
-
+        
     }
     //显示发送报告
     _showSendProblem = () => {
@@ -164,21 +193,29 @@ class ClockPageDetail extends Component {
     }
     render() {
         let showIcon = ((!this.state.scanWifi && !this.state.scanBluetooth) || this.state.canClock) ? false : true;
+        let {onBluetooth,onWifi,scanWifi,scanBluetooth,canClock} = this.state
+        let [allOff,onBlue,onWIFI,range,unRange] = ['请打开蓝牙或WIFI','请打开蓝牙','请打开WIFI','您当前已在打卡范围内','您当前不在有效打卡范围内']
+        let tipText = !onBluetooth && !onWifi ? allOff : 
+                        (onWifi && !canClock && !onBluetooth ? onBlue : 
+                            (onBluetooth && !canClock  && !onWifi ? onWIFI : 
+                                (canClock ? range : 
+                                    (onBluetooth && onWifi && !canClock ? unRange: ''))))
+        let ClockContainer = canClock ? TouchableOpacity : View
         return (
             <View style={{flex: 1}}>
                 <View style={{flex: 3, backgroundColor: '#fdfdfd',justifyContent: 'center'}}>
                     <ClockDetailContent />
                 </View>
                 <Divider />
-                <View style={{flex: 1, backgroundColor: '#fff',alignItems: 'center',justifyContent: 'center'}}>
-                    <View style={{flexDirection: 'row',marginBottom:6,justifyContent: 'center',alignItems: 'center'}}>
-                        <Text style={styles.tipText}>{!this.state.canClock ? '搜索中...' : '您当前已在打卡范围内'}</Text>
-                        <AntDesign name={'exclamationcircleo'} size={16} style={[styles.iconStyle,showIcon ? null : styles.hide]} onPress={this._sendProblem}/>
+                <View  style={{flex: 1, backgroundColor: '#fff',alignItems: 'center',justifyContent: 'center',height: 140}}>
+                    <View style={{flexDirection: 'row',marginBottom:6,justifyContent: 'center',alignItems: 'center',height: 30}}>
+                        <Text style={styles.tipText}>{tipText}</Text>
+                        <AntDesign name={'exclamationcircleo'} size={20} style={[styles.iconStyle,!canClock ? null : styles.hide]} onPress={this._sendProblem}/>
                     </View>
-                    <TouchableOpacity style={[styles.clockFingerWrapper,this.state.canClock ? styles.canClock : null]} onPress={() => this._handleClock()}>
-                        <Text style={[styles.clockTime,this.state.canClock ? styles.canClockText : null]}>13:53</Text>
+                    <ClockContainer style={[styles.clockFingerWrapper,canClock ? styles.canClock : null]} onPress={() => this._handleClock()}>
+                        <Text style={[styles.clockTime,this.state.canClock ? styles.canClockText : null]}>{this.state.date}</Text>
                         <Text style={[styles.clockText,this.state.canClock ? styles.canClockText : null]}>打卡</Text>
-                    </TouchableOpacity>
+                    </ClockContainer>
                 </View>
             </View>
         )
@@ -199,7 +236,6 @@ const styles = StyleSheet.create({
     },
     tipText: {
         color: Colors.mainColor,
-        height: 30,
         borderWidth: 1,
         borderColor: Colors.mainColor,
         borderBottomLeftRadius: 4,
@@ -212,7 +248,8 @@ const styles = StyleSheet.create({
     },
     iconStyle: {
         color: 'red',
-        marginLeft: 4,
+        position: 'absolute',
+        right: -30
     },
     clockTime: {
         color:'#cdcdcd',

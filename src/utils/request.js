@@ -37,13 +37,30 @@ service.interceptors.response.use(
         return Promise.resolve(response.data)
     },
     error => {
-        console.log('err', error);
         if (axios.isCancel(error)) {
             console.log(error)
             return Promise.reject("Ajax Abort: 该请求在axios拦截器中被中断")
         } else if (error.response) {
-            console.log('请求时错误拦截error', error)
-            return Promise.reject(error.response.data)
+            console.log('请求时错误拦截error', error.response)
+            switch (error.response.status) {
+                case 401:
+                    Promise.resolve(error.response.data)
+                    break
+                case 403:
+                    Promise.resolve(error.response.data)
+                    break
+                case 404:
+                    Promise.resolve(error.response.data)
+                    break
+                case 406:
+                    Promise.resolve(error.response.data)
+                    break
+                case 500:
+                    Promise.resolve(error.response.data)
+                    break
+                default:
+                    return Promise.reject(error.response.data) 
+            }
         }
     }
 )

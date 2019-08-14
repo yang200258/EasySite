@@ -5,6 +5,7 @@ import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
 import StorageUtil from '../../utils/storage';
 import SplashScreen from 'react-native-splash-screen';
+import NavigationUtil from '../../navigator/NavigationUtil'
 const theme = {
     colors: {
       ...DefaultTheme.colors,
@@ -17,8 +18,8 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            username:'',
-            password: '',
+            username:'qqing_yang',
+            password: 'Yy141025',
             showTip: false,
             tipText: ''
         }
@@ -43,7 +44,7 @@ class Login extends Component {
         let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
         if(res && res.token) {
             let status = await StorageUtil.save('loginToken', res.token)
-            this.props.navigation.navigate('Tab')
+            if(status) this.props.navigation.navigate('Tab')
         }
     }
     // 忘记密码
