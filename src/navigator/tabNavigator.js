@@ -12,18 +12,10 @@ import MyConcern from '../views/MyConcern/MyConcern';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-// TabBarBottom的tabBarOptions (TabBarBottom为iOS的默认tab bar)
 
-// activeTintColor - 当前选中的tab bar的文本颜色和图标颜色
-// activeBackgroundColor - 当前选中的tab bar的背景色
-// inactiveTintColor - 当前未选中的tab bar的文本颜色和图标颜色
-// inactiveBackgroundColor - 当前未选中的tab bar的背景色
-// showLabel - 是否显示tab bar的文本，默认是true
-// style - tab bar的样式
-// labelStyle - tab bar的文本样式
-// tabStyle - tab页的样式
-// allowFontScaling - 文本字体大小是否可以缩放取决于该设置，默认为true。
-  const TabNav = createMaterialBottomTabNavigator({
+
+
+  const TABS = {
     Clock: {
         screen: ClockPage,
         navigationOptions: {
@@ -37,7 +29,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
             tabBarButtonComponent: TouchableOpacity,
         }
     },
-    WorkBench: {
+    Work: {
         screen: WorkBench,
         navigationOptions: {
             tabBarLabel: '工作台',
@@ -48,7 +40,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
             tabBarButtonComponent: TouchableOpacity
         }
     },
-    MyConcern: {
+    Concern: {
         screen: MyConcern,
         navigationOptions: {
             tabBarLabel: '我的关注',
@@ -59,21 +51,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
             tabBarButtonComponent: TouchableOpacity
         }
     },
-    Mine: {
+    person: {
         screen: Mine,
         navigationOptions: {
             tabBarLabel: '我',
             title: '我',
-            headerStyle: {
-
-            },
             tabBarIcon: ({tintColor,focused}) => {
                 return <MaterialIcons name={'person-outline'} size={styles.iconSize} style={{color:focused ? tintColor : Colors.textColor}} />
             },
             tabBarButtonComponent: TouchableOpacity
         }
     },
-  },{
+  }
+  const {Clock,Work,Concern,person} = TABS
+  const tabs = {Clock,Work,Concern,person}
+  const TabNav = createMaterialBottomTabNavigator(tabs,{
     labeled: true,
     shifting: false,
     activeColor: Colors.mainColor,
