@@ -5,7 +5,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 // import Clendar from '../../components/Calendar';
 import Colors from '../../utils/Colors';
 import utils from '../../utils/utils';
-import NavigationBar from '../../components/NavigationBar';
+import NavigationBar from '../../components/common/NavigationBar';
 import {  IconButton } from 'react-native-paper';
 import NavigationUtil from '../../navigator/NavigationUtil'
 

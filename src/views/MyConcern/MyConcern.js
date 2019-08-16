@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import NavigationBar from '../../components/NavigationBar';
+import NavigationBar from '../../components/common/NavigationBar';
 import Colors from '../../utils/Colors';
 
 class MyConsern extends Component {

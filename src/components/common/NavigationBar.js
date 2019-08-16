@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 import {DeviceInfo,View,StyleSheet,Platform,Text,StatusBar} from 'react-native'
 import PropTypes from 'prop-types';
-import Colors from '../utils/Colors'
+import Colors from '../../utils/Colors'
 
 const NAV_BAR_HEIGHT_IOS = 44;//导航栏在iOS中的高度
 const NAV_BAR_HEIGHT_ANDROID = 50;//导航栏在Android中的高度

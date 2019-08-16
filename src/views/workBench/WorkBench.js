@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View,Image,DeviceEventEmitter } from 'react-native';
-import NavigationBar from '../../components/NavigationBar';
+import NavigationBar from '../../components/common/NavigationBar';
 import Colors from '../../utils/Colors';
 class WorkBench extends Component {
     
