@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView,ActivityIndicator } from 'react-native';
+import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView  } from 'react-native';
 import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
@@ -8,7 +8,7 @@ import SplashScreen from 'react-native-splash-screen';
 import NavigationUtil from '../../navigator/NavigationUtil';
 import imageBg from '../../assets/image/icon_logo.png'
 import imageBgEking from '../../assets/image/icon_eking_logo.png'
-import Loading from '../../components/common/Loading'
+import LoadingIndicator from '../../components/common/LoadingIndicator'
 import NavigationBar from '../../components/common/NavigationBar'
 const theme = {
     colors: {
@@ -30,6 +30,7 @@ class Login extends Component {
             res:'',
             isUserFocused: false,
             isPassFocused: false,
+            loading: false
         }
     }
     componentDidMount() {
@@ -48,25 +49,34 @@ class Login extends Component {
     login= async ()=> {
         if(!this.state.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
         if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
+        this.setLoading(true)
         let {username,password} = this.state
         let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
         if(res && res.token) {
             let status = await StorageUtil.save('loginToken', res.token)
             if(status) NavigationUtil.go('Tab')
+            this.setLoading(false)
         }
     }
     // 忘记密码
     _forgetPass= ()=> {
         
     }
+    setLoading = (val) => {
+        this.setState({
+            loading: val
+        })
+    }
+    onRequestClose = () => {
+        console.log('onRequestClose')
+        this.setState({loading: false})
+    }
     render() {
         NavigationUtil.navigation = this.props.navigation
-        let navigationBarProps = {hide: true,statusBar: {backgroundColor: '#fff',barStyle: 'dark-content',color: '#000',hidden: false}}
         return (
-            <View style={{flex:1}}>
-                <Loading />
-                <KeyboardAvoidingView behavior="padding" style={{paddingHorizontal: 30,flex:1}}>
-                    <NavigationBar {...navigationBarProps} />
+            <KeyboardAvoidingView style={{flex:1}}>
+                <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} />
+                <View behavior="padding" style={{paddingHorizontal: 30,flex:1}}>
                     <View style={{flex:1,alignItems: 'center',justifyContent: 'center'}}>
                     <Image
                         source={imageBg}
@@ -125,8 +135,8 @@ class Login extends Component {
                     >
                         {this.state.tipText}
                     </Snackbar>
-                </KeyboardAvoidingView>
-            </View>
+                </View>
+            </KeyboardAvoidingView>
         )
     }
 }

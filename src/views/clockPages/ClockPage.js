@@ -8,9 +8,16 @@ import utils from '../../utils/utils';
 import NavigationBar from '../../components/common/NavigationBar';
 import {  IconButton } from 'react-native-paper';
 import NavigationUtil from '../../navigator/NavigationUtil'
-
+import LoadingIndicator from '../../components/common/LoadingIndicator'
 
 class ClockPage extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            loading: false
+        }
+    }
+    
     renderMessageButton = () => {
         return <TouchableOpacity 
             onPress={() => {
@@ -20,11 +27,12 @@ class ClockPage extends Component {
                 <Text style={styles.messageNum}>{3}</Text>
         </TouchableOpacity>
     }
-    _handleColock = () => {
+    _handleColock = async () => {
         this._getPermission()
         NavigationUtil.go('ClockPageDetail')
     }
     _getPermission = () => {
+        this.setLoading(true)
         if (Platform.OS === 'android' && Platform.Version >= 23) {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
                 if (result) {
@@ -40,11 +48,22 @@ class ClockPage extends Component {
                 }
           });
         }
+        this.setLoading(false)
+    }
+    setLoading = (val) => {
+        console.log('setLoading',val)
+        this.setState({loading: val})
+    }
+    onRequestClose = () => {
+        console.log('onRequestClose')
+        this.setState({loading: false})
     }
     render() {
-        const {navigation} = this.props
+        // const {navigation} = this.props
         // NavigationUtil.navigation = this.props.navigation
+        let Loading = this.state.loading ? <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} /> : null
         let statusBar = {
+            hide: true,
             barStyle: 'dark-content',
             backgroundColor: Colors.navColor,
         }
@@ -56,6 +75,7 @@ class ClockPage extends Component {
         return (
             <View style={styles.clockContainer}>
                 {navigationBar}
+                {Loading}
                 {/* 日历区域 */}
                 {/* <View><Clendar markedDay={markedDay} setMarkedDates={this.setMarkedDates} day={this.state.day}></Clendar></View> */}
                 {/* 打卡区域 */}

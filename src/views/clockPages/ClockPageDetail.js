@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,StyleSheet,TouchableOpacity } from 'react-native';
+import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,StyleSheet,TouchableOpacity,InteractionManager  } from 'react-native';
 import {Divider} from 'react-native-paper'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import ClockDetailContent from '../../components/Clock/ClockDetailContent'
@@ -30,9 +30,12 @@ class ClockPageDetail extends Component {
         this._handleBluetoothUpdateState = this._handleBluetoothUpdateState.bind(this);
     }
     componentDidMount(){
-        this._setDateTime()
-        this.intervalTime = setInterval(this._setDateTime,1000)
-        this._getDeviceInfo()
+        InteractionManager.runAfterInteractions(() => {
+            console.log('动画执行完了')
+            this._setDateTime()
+            this.intervalTime = setInterval(this._setDateTime,1000)
+            this._getDeviceInfo()
+        });
     }
     _setDateTime = () => {
         this.setState(previousState => {
