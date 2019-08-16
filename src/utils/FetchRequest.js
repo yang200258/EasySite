@@ -3,10 +3,10 @@
 let common_url = 'http://10.28.128.123:8080/';
 let token = '';
 
-const fetchRequest = async (url,method,params='') => {
+let  fetchRequest = async (url,method,params='') => {
     let headers = {
         "Content-Type": "application/json;charset=UTF-8",
-        "x-token":token  //用户登陆后返回的token，某些涉及用户数据的接口需要在header中加上token
+        // "x-token":token  //用户登陆后返回的token，某些涉及用户数据的接口需要在header中加上token
     };
     console.log('请求参数',url,params);
     if(params === '') {
@@ -20,6 +20,7 @@ const fetchRequest = async (url,method,params='') => {
     } else {
         try {
             let res = await timeout(fetch(common_url + url,{method,headers,body: JSON.stringify(params)}));
+            console.log(res)
             return res.json();
         }catch(err) {
             console.log(err);
@@ -46,3 +47,5 @@ const timeout = async (fn,time=10000) => {
 
     return abortable_promise
 }
+
+export default fetchRequest

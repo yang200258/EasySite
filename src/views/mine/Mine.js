@@ -10,8 +10,8 @@ class Mine extends Component {
     }
     render() {
         return (
-            <View style={{backgroundColor: '#eee'}}>
-                <Button mode='text' style={{marginTop: 40}} onPress={() => this.exitLogin()}>
+            <View style={{backgroundColor: '#eee',flex:1,marginTop: 30}}>
+                <Button mode='text' style={{backgroundColor: '#fff'}} color='#000' onPress={() => this.exitLogin()}>
                     退出登录
                 </Button>
             </View>

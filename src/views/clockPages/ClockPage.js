@@ -43,7 +43,7 @@ class ClockPage extends Component {
     }
     render() {
         const {navigation} = this.props
-        NavigationUtil.navigation = this.props.navigation
+        // NavigationUtil.navigation = this.props.navigation
         let statusBar = {
             barStyle: 'dark-content',
             backgroundColor: Colors.navColor,

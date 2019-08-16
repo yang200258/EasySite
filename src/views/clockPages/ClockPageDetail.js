@@ -113,7 +113,6 @@ class ClockPageDetail extends Component {
         if(Platform.OS == 'android' && device.name){
             mac = device.id;
             let {uuid,major,minor} = await this._dealDevic(device)
-            console.log(mac,uuid,major,minor);
             let res = await axios({url: '/api/clock/bluetooth/_check',method: 'post',data: {mac,uuid,major,minor}})
             if(res && res.token) {
                 this.setState({canClock:true,scanBluetooth: false, clockToken:res.token})

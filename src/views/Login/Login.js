@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import {Text,View,TouchableOpacity} from 'react-native';
+import {Text,View,TouchableOpacity,Alert} from 'react-native';
 import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
 import StorageUtil from '../../utils/storage';
 import SplashScreen from 'react-native-splash-screen';
-import NavigationUtil from '../../navigator/NavigationUtil'
+import NavigationUtil from '../../navigator/NavigationUtil';
 const theme = {
     colors: {
       ...DefaultTheme.colors,
@@ -21,7 +21,8 @@ class Login extends Component {
             username:'qqing_yang',
             password: 'Yy141025',
             showTip: false,
-            tipText: ''
+            tipText: '',
+            res:''
         }
     }
     componentDidMount() {
@@ -44,7 +45,7 @@ class Login extends Component {
         let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
         if(res && res.token) {
             let status = await StorageUtil.save('loginToken', res.token)
-            if(status) this.props.navigation.navigate('Tab')
+            if(status) NavigationUtil.go('Tab')
         }
     }
     // 忘记密码
@@ -52,6 +53,7 @@ class Login extends Component {
         
     }
     render() {
+        NavigationUtil.navigation = this.props.navigation
         return (
             <View  style={{paddingHorizontal: 30,flex:1}}>
                 <View style={{flex:1,alignItems: 'center',justifyContent: 'center'}}>
@@ -74,7 +76,7 @@ class Login extends Component {
                         onChangeText={value => this._setPass(value)}
                         theme={theme}
                     />
-                    <Button style={{marginTop: 40}} dark={true} mode="contained" onPress={this.login} color={Colors.mainColor}>
+                    <Button style={{marginTop: 40}} dark={true} mode="contained" onPress={() => this.login()} color={Colors.mainColor}>
                         登录
                     </Button>
                     <TouchableRipple 
