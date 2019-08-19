@@ -6,18 +6,16 @@
  */
 
 import React,{Component} from 'react';
-import { Provider } from 'react-redux';
-import store from './src/store';
-import RootNav from './src/navigator/stackNavigator';
+// import {Text,Image} from 'react-native';
+
+import AppNavigator from './src/navigator/stackNavigator';
 
 // import RootNav from './src/navigator/tabNavigator';
 
 export default class App extends Component {
     render() {
         return (
-            <Provider store={store}>
-                <RootNav /> 
-           </Provider>
+           <AppNavigator /> 
         )
     }
 }

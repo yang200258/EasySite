@@ -6,11 +6,14 @@ const defaultState = {
     loginToken: ''
 }
 
-export default onAction = (state = defaultState,action) => {
+const onAction = (state = defaultState,action) => {
     switch (action.type) {
         case Types.SET_ACCOUNT: 
             return {
                 ...state,
             }
+        default:
+            return state
     }
 }
+export default onAction
