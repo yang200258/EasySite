@@ -3,21 +3,21 @@ import { BackHandler } from "react-native";
 import { NavigationActions } from "react-navigation";
 
 class BackBase extends React.Component {
+    constructor(props) {
+        super(props)
+        this._hardwareBackPress = this.onHardwareBackPress.bind(this);
+    }
     componentDidMount() {
-      BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+        if (this.props.backPress) BackHandler.addEventListener("hardwareBackPress", this._hardwareBackPress);
     }
   
     componentWillUnmount() {
-      BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+        if (this.props.backPress) BackHandler.removeEventListener("hardwareBackPress", this._hardwareBackPress);
     }
   
-    onBackPress = () => {
-      const { dispatch, nav } = this.props;
-      if (nav.index === 0) {
-        return false;
-      }
-  
-      dispatch(NavigationActions.back());
-      return true;
+    onHardwareBackPress = (e) => {
+        return this.props.backPress(e);
     };
   }
+
+  export default BackBase

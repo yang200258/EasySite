@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView  } from 'react-native';
+import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView,BackHandler,TouchableHighlight } from 'react-native';
 import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
 import StorageUtil from '../../utils/storage';
 import SplashScreen from 'react-native-splash-screen';
 import NavigationUtil from '../../navigator/NavigationUtil';
-import imageBg from '../../assets/image/icon_logo.png'
-import imageBgEking from '../../assets/image/icon_eking_logo.png'
-import LoadingIndicator from '../../components/common/LoadingIndicator'
-import NavigationBar from '../../components/common/NavigationBar'
+import imageBg from '../../assets/image/icon_logo.png';
+import imageBgEking from '../../assets/image/icon_eking_logo.png';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
+import NavigationBar from '../../components/common/NavigationBar';
+import BackBase from '../../components/common/BackBase';
+import {NavigationActions} from "react-navigation";
+import {connect} from "react-redux";
 const theme = {
     colors: {
       ...DefaultTheme.colors,
@@ -22,6 +25,7 @@ const theme = {
 class Login extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackBase({backPress: this.onBackPress})
         this.state = {
             username:'qqing_yang',
             password: 'Yy141025',
@@ -35,6 +39,18 @@ class Login extends Component {
     }
     componentDidMount() {
         SplashScreen.hide();
+        this.backPress.componentDidMount()
+    }
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+    onBackPress = () => {
+        const { dispatch, nav } = this.props;
+        if (nav.routes[0].index === 0 && !this.state.loading) {
+            return false;
+        }
+        dispatch(NavigationActions.back());
+        return true;
     }
     // 输入用户名事件
     _setUserName = (username) => {
@@ -51,11 +67,19 @@ class Login extends Component {
         if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
         this.setLoading(true)
         let {username,password} = this.state
-        let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
-        if(res && res.token) {
-            let status = await StorageUtil.save('loginToken', res.token)
-            this.setLoading(false)
-            if(status) NavigationUtil.resetToHomPage({navigation: this.props.navigation})
+        try {
+            let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
+            if(res && res.token) {
+                let status = await StorageUtil.save('loginToken', res.token)
+                this.setLoading(false)
+                if(status) NavigationUtil.resetToHomPage({navigation: this.props.navigation})
+            } else {
+                this.setLoading(false)
+                //请求返回成功但请求失败
+                console.log(res);
+            }
+        } catch(err) {
+            console.log(err);
         }
     }
     // 忘记密码
@@ -68,23 +92,24 @@ class Login extends Component {
         })
     }
     onRequestClose = () => {
-        console.log('onRequestClose')
-        this.setState({loading: false})
+        this.setLoading(false)
     }
     render() {
         NavigationUtil.navigation = this.props.navigation
         return (
             <KeyboardAvoidingView style={{flex:1}}>
                 <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} />
-                <View behavior="padding" style={{paddingHorizontal: 30,flex:1}}>
+                {/* <TouchableHighlight> */}
+                <View style={{paddingHorizontal: 30,flex:1}}>
                     <View style={{flex:1,alignItems: 'center',justifyContent: 'center'}}>
-                    <Image
-                        source={imageBg}
-                        resizeMode='cover'
-                        style={{width: 60,height:60}} />
+                        <Image
+                            source={imageBg}
+                            resizeMode='cover'
+                            style={{width: 60,height:60}} />
                     </View>
                     <View style={{flex:4,flexDirection: 'column'}}>
                         <TextInput
+                            ref={(c) => {this.username = c}}
                             backgroundColor='#fff'
                             autoCompleteType={'username'}
                             style={[styles.btn,this.state.isUserFocused ? styles.selectColor : null]}
@@ -98,6 +123,7 @@ class Login extends Component {
                             onBlur={() => this.setState({isUserFocused: false})}
                         />
                         <TextInput
+                            ref={(c) => {this.password = c}}
                             backgroundColor='#fff'
                             secureTextEntry={true}
                             style={[styles.btn,this.state.isPassFocused ? styles.selectColor : null]}
@@ -136,6 +162,7 @@ class Login extends Component {
                         {this.state.tipText}
                     </Snackbar>
                 </View>
+                {/* </TouchableHighlight> */}
             </KeyboardAvoidingView>
         )
     }
@@ -152,4 +179,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login
+const mapStateToProps = state => ({
+    nav: state.nav
+})
+export default connect(mapStateToProps)(Login)

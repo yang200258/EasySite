@@ -12,7 +12,7 @@ class ClockDetailTag extends Component {
                 <Text style={styles.leftTagContainer}>{this.props.data.state}</Text>
                 <View style={styles.rightTagContainer}>
                     <Text style={styles.rightText}>{this.props.data.time}</Text>
-                    <Text style={styles.rightText}>{this.props.data.location}</Text>
+                    <Text style={styles.rightText}>{this.props.data.address}</Text>
                 </View>
             </View>
         )

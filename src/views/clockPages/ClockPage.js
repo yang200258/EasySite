@@ -9,15 +9,44 @@ import NavigationBar from '../../components/common/NavigationBar';
 import {  IconButton } from 'react-native-paper';
 import NavigationUtil from '../../navigator/NavigationUtil'
 import LoadingIndicator from '../../components/common/LoadingIndicator'
-
+import BackBase from '../../components/common/BackBase'
+import {NavigationActions} from "react-navigation";
+import {connect} from 'react-redux';
+//获取经纬度
+// import Geolocation from 'react-native-geolocation-service';
+// import Geolocation from "Geolocation"
 class ClockPage extends Component {
     constructor(props) {
         super(props)
+        this.backPress = new BackBase({backPress: this.onBackPress})
         this.state = {
             loading: false
         }
     }
-    
+    componentDidMount() {
+        // Geolocation.getCurrentPosition(
+        //     (position) => {
+        //         console.log(position);
+        //     },
+        //     (error) => {
+        //         // See error code charts below.
+        //         console.log(error.code, error.message);
+        //     },
+        //     { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        // );
+        this.backPress.componentDidMount()
+    }
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+    onBackPress = () => {
+        const { dispatch, nav } = this.props;
+        if (nav.routes[1].index === 0) {
+            return false;
+        }
+        dispatch(NavigationActions.back());
+        return true;
+    }
     renderMessageButton = () => {
         return <TouchableOpacity 
             onPress={() => {
@@ -28,11 +57,12 @@ class ClockPage extends Component {
         </TouchableOpacity>
     }
     _handleColock = async () => {
-        this._getPermission()
+        this.setLoading(true)
+        await this._getPermission()
+        this.setLoading(false)
         NavigationUtil.go('ClockPageDetail')
     }
     _getPermission = () => {
-        this.setLoading(true)
         if (Platform.OS === 'android' && Platform.Version >= 23) {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
                 if (result) {
@@ -48,7 +78,6 @@ class ClockPage extends Component {
                 }
           });
         }
-        this.setLoading(false)
     }
     setLoading = (val) => {
         this.setState({loading: val})
@@ -57,8 +86,6 @@ class ClockPage extends Component {
         this.setState({loading: false})
     }
     render() {
-        // const {navigation} = this.props
-        // NavigationUtil.navigation = this.props.navigation
         let Loading = this.state.loading ? <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} /> : null
         let statusBar = {
             hide: true,
@@ -137,4 +164,8 @@ const styles = StyleSheet.create({
     }
 
 })
-export default ClockPage
+
+const mapStateToProps = state => ({
+    nav: state.nav
+})
+export default connect(mapStateToProps)(ClockPage)

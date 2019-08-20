@@ -24,42 +24,26 @@ service.interceptors.request.use(
         console.log('config', config);
         return config
     },
-    err => {
-        return Promise.reject(err);
+    async err => {
+        console.log(err)
+        return err;
     }
 );
 
 // http response 拦截器
 // 针对响应代码确认跳转到对应页面
 service.interceptors.response.use(
-    response => {
+    async response => {
         console.log('responsedata', response);
-        return Promise.resolve(response.data)
+        return response.data
     },
-    error => {
+    async error => {
         if (axios.isCancel(error)) {
-            return Promise.reject('Request canceled', error.message)
+            console.log('Request canceled', error.message)
+            return error.message
         } else if (error.response) {
             console.log('请求时错误拦截error', error.response.data)
-            switch (error.response.status) {
-                case 401:
-                    Promise.resolve(error.response.data)
-                    break
-                case 403:
-                    Promise.resolve(error.response.data)
-                    break
-                case 404:
-                    Promise.resolve(error.response.data)
-                    break
-                case 406:
-                    Promise.resolve(error.response.data)
-                    break
-                case 500:
-                    Promise.resolve(error.response.data)
-                    break
-                default:
-                    return Promise.reject(error.response.data) 
-            }
+            return error.response.data
         }
     }
 )

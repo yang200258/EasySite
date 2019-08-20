@@ -2,15 +2,34 @@ import React,{Component} from 'react';
 import {View,ActivityIndicator,StyleSheet,Text,Modal} from 'react-native';
 import NavigationBar from './NavigationBar';
 import PropTypes from 'prop-types';
-
+import BackBase from './BackBase';
+import {connect} from "react-redux";
 class LoadingIndicator extends Component {
+    constructor(props) {
+        super(props)
+        this.backPress = new BackBase({backPress: this.onBackPress})
+    }
       static defaultProps = {
           loading: false,
           loadingText: '加载中...',
           background: 'rgba(0,0,0,.5)',
           textColor: '#fff'
       } 
-      
+    componentDidMount() {
+        this.backPress.componentDidMount()
+    }
+    componentWillUnmount() {
+        this.backPress.componentWillUnmount()
+    }
+    onBackPress = () => {
+        console.log(this.props)
+        // const { dispatch, nav } = this.props;
+        // if (nav.routes[0].index === 0) {
+        //     return false;
+        // }
+        this.props.onRequestClose()
+        return false;
+    }
     render() {
         let {loading,loadingText,background,textColor} = this.props
         let navigationBarProps = {hide: true,statusBar: {backgroundColor: loading ? background : textColor,barStyle: loading ? 'light-content' : 'dark-content',hidden: false}}
@@ -54,5 +73,7 @@ const styles = StyleSheet.create({
     background: PropTypes.string,
     color: PropTypes.string,
   }
-
-  export default LoadingIndicator
+  const mapStateToProps = state => ({
+    nav: state.nav
+})
+export default connect(mapStateToProps)(LoadingIndicator)

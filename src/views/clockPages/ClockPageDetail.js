@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
-import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,StyleSheet,TouchableOpacity,InteractionManager  } from 'react-native';
+import { Text, View,Image,NativeModules,NativeEventEmitter,Platform,PermissionsAndroid,StyleSheet,TouchableOpacity,InteractionManager} from 'react-native';
 import {Divider} from 'react-native-paper'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import ClockDetailContent from '../../components/Clock/ClockDetailContent'
 import Colors from '../../utils/Colors';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
 // 查看设备信息
 import BleManager from 'react-native-ble-manager';
 import axios from '../../utils/request'
 import WifiManager from 'react-native-wifi';
+//获取经纬度
+import Geolocation from 'react-native-geolocation-service';
+//获取手机model、uid、version
+import DeviceInfo from 'react-native-device-info';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+const phoneModel = Platform === 'ios' ? DeviceInfo.getModel() : DeviceInfo.getDeviceId();
+const phoneUid = DeviceInfo.getUniqueID();
+const phoneVersion = DeviceInfo.getVersion();
 
 class ClockPageDetail extends Component {
     constructor(props) {
@@ -24,23 +32,31 @@ class ClockPageDetail extends Component {
             canClock: false,
             clockToken: '',
             date: '',
+            time: '',
+            bluetooth:[],
+            wifi: [],
+            clockData: [],
+            loading: false
         }
         this._handleDiscoverPeripheral = this._handleDiscoverPeripheral.bind(this);
         this._handleStopScan = this._handleStopScan.bind(this);
         this._handleBluetoothUpdateState = this._handleBluetoothUpdateState.bind(this);
     }
-    componentDidMount(){
-        InteractionManager.runAfterInteractions(() => {
-            console.log('动画执行完了')
-            this._setDateTime()
+    async componentDidMount(){
+        // InteractionManager.runAfterInteractions(async () => {
+            await this._setDateTime()
+            await this._getClockData()
             this.intervalTime = setInterval(this._setDateTime,1000)
             this._getDeviceInfo()
-        });
+        // });
     }
     _setDateTime = () => {
         this.setState(previousState => {
-            let time = new Date().toTimeString().split(' ')[0].split(':') 
-            return { date: `${time[0]}:${time[1]}` }
+            let dates = new Date()
+            let tmpDate = dates.toLocaleDateString().split('/')
+            let date = `${tmpDate[0]}-${tmpDate[1] < 10 ? '0' +tmpDate[1] : tmpDate[1]}-${tmpDate[2] < 10 ? '0' +tmpDate[2] : tmpDate[2]}`
+            let time = dates.toTimeString().split(' ')[0].split(':') 
+            return { time: `${time[0]}:${time[1]}`,date: date }
         });
     }
     componentWillUnmount() {
@@ -77,6 +93,7 @@ class ClockPageDetail extends Component {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
                 if (result) {
                   console.log("Permission is OK");
+                  //TODO: 获取到位置权限后获取经纬度操作
                 } else {
                   PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((result) => {
                     if (result) {
@@ -115,10 +132,12 @@ class ClockPageDetail extends Component {
         let mac;  //蓝牙Mac地址            
         if(Platform.OS == 'android' && device.name){
             mac = device.id;
+            let {bluetooth} = this.state
             let {uuid,major,minor} = await this._dealDevic(device)
             let res = await axios({url: '/api/clock/bluetooth/_check',method: 'post',data: {mac,uuid,major,minor}})
             if(res && res.token) {
-                this.setState({canClock:true,scanBluetooth: false, clockToken:res.token})
+                bluetooth.push({mac,uuid,major,minor})
+                this.setState({canClock:true,scanBluetooth: false, clockToken:res.token,bluetooth: bluetooth})
                 BleManager.stopScan()
             }
         } else{  
@@ -170,12 +189,14 @@ class ClockPageDetail extends Component {
     scanWifiList = () => {
         WifiManager.reScanAndLoadWifiList( async(res) => {
             let wifiList = JSON.parse(res)
+            let {wifi} = this.state
             console.log('wifiList:',wifiList)
             for(let i = 0;i<wifiList.length;i++) {
                 let respond = await axios({url: '/api/clock/wifi/_check',method: 'post',data:{mac:wifiList[i].BSSID}})
                 console.log('wifi扫描设备请求后返回信息：',respond)
                 if(respond && respond.token) {
-                    this.setState({canClock: true,clockToken:respond.token})
+                    wifi.push({mac:wifiList[i].BSSID})
+                    this.setState({canClock: true,clockToken:respond.token,wifi: wifi})
                     break
                 }
             }
@@ -186,16 +207,50 @@ class ClockPageDetail extends Component {
         })
     }
     //打卡
-    _handleClock = () => {
-        
+    _handleClock = async () => {
+        this.setLoading(true)
+        let {wifi,bluetooth,clockToken,loading} = this.state
+        let res;
+        try {
+            if(wifi.length) {
+                res = await axios({url: '/api/clock/_clock',method:'post',data: {phoneModel,phoneUid,phoneVersion,clockToken,wifi}})  
+            } else {
+                res = await axios({url: '/api/clock/_clock',method:'post',data: {phoneModel,phoneUid,phoneVersion,clockToken,bluetooth}})
+            }
+            if(typeof(res) == 'string') {
+                this._getClockData()
+            }
+        }catch(err) {
+            console.log(err);
+        }
+        console.log(loading);
+        // this.setLoading(false)
+    }
+    //获取打卡数据
+    _getClockData = async () => {
+        this.setLoading(true)
+        let {date} = this.state
+        let clockRes = await axios({url: `/api/clock/events?date=${date}`,method: 'get'})
+        if(clockRes && clockRes.length) {
+            this.setState({clockData:clockRes})
+        }
+        this.setLoading(false)
     }
     //显示发送报告
     _showSendProblem = () => {
         
     }
+    setLoading = (val) => {
+        this.setState({
+            loading: val
+        })
+    }
+    onRequestClose = () => {
+        this.setLoading(false)
+    }
     render() {
         let showIcon = ((!this.state.scanWifi && !this.state.scanBluetooth) || this.state.canClock) ? false : true;
-        let {onBluetooth,onWifi,scanWifi,scanBluetooth,canClock} = this.state
+        let {onBluetooth,onWifi,scanWifi,scanBluetooth,canClock,clockData,time,loading} = this.state
         let [allOff,onBlue,onWIFI,range,unRange] = ['请打开蓝牙或WIFI','请打开蓝牙','请打开WIFI','您当前已在打卡范围内','您当前不在有效打卡范围内']
         let tipText = !onBluetooth && !onWifi ? allOff : 
                         (onWifi && !canClock && !onBluetooth ? onBlue : 
@@ -203,10 +258,12 @@ class ClockPageDetail extends Component {
                                 (canClock ? range : 
                                     (onBluetooth && onWifi && !canClock ? unRange: ''))))
         let ClockContainer = canClock ? TouchableOpacity : View
+        let ClockDetailWrapper = clockData.length == 0 ? <Text>暂无数据</Text> : <ClockDetailContent clockData={clockData} />
         return (
             <View style={{flex: 1}}>
+                <LoadingIndicator loading={loading} onRequestClose={this.onRequestClose} />
                 <View style={{flex: 3, backgroundColor: '#fdfdfd',justifyContent: 'center'}}>
-                    <ClockDetailContent />
+                    {ClockDetailWrapper}
                 </View>
                 <Divider />
                 <View  style={{flex: 1, backgroundColor: '#fff',alignItems: 'center',justifyContent: 'center',height: 140}}>
@@ -215,7 +272,7 @@ class ClockPageDetail extends Component {
                         <AntDesign name={'exclamationcircleo'} size={20} style={[styles.iconStyle,!canClock ? null : styles.hide]} onPress={this._sendProblem}/>
                     </View>
                     <ClockContainer style={[styles.clockFingerWrapper,canClock ? styles.canClock : null]} onPress={() => this._handleClock()}>
-                        <Text style={[styles.clockTime,this.state.canClock ? styles.canClockText : null]}>{this.state.date}</Text>
+                        <Text style={[styles.clockTime,this.state.canClock ? styles.canClockText : null]}>{time}</Text>
                         <Text style={[styles.clockText,this.state.canClock ? styles.canClockText : null]}>打卡</Text>
                     </ClockContainer>
                 </View>

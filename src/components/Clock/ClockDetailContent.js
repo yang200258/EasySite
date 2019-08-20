@@ -4,6 +4,14 @@ import Colors from '../../utils/Colors';
 import ClockDetailTag from './ClockDetailTag'
 class ClockDetailContent extends Component {
     render() {
+        let {clockData} = this.props
+        clockData.forEach((item,index) => {
+            item.time = item.happenedTime.split('T')[1].split(':')[0] + ':' + item.happenedTime.split('T')[1].split(':')[1]
+            item.state = (index == 0 && item.happenedTime <= item.scheduleStart) ? '签到' : 
+                            (index == 0 && item.happenedTime > item.scheduleStart) ? '迟到' :
+                                (index == 1 && item.happenedTime >= item.scheduleEnd) ? '签退' : 
+                                    (index == 1 && item.happenedTime < item.scheduleEnd) ? '记录' : null
+        })
         return (
             <View style={styles.clockContent}>
                 <View style={styles.leftWrapper}>
@@ -12,9 +20,9 @@ class ClockDetailContent extends Component {
                     <View style={styles.dot}></View>
                 </View>
                 <View style={styles.rightWrapper}>
-                    <ClockDetailTag data={{state:'签到',time:'08:23',location:'海南大厦25楼门口左'}}/>
+                    <ClockDetailTag data={{state:clockData[0].state,time:clockData[0].time,address:clockData[0].address}}/>
                     <View style={styles.space}/>
-                    <ClockDetailTag data={{state:'签退',time:'05:23',location:'海南大厦25楼门口左'}}/>
+                    <ClockDetailTag data={{state:clockData[1].state,time:clockData[1].time,address:clockData[1].address}}/>
                     <Text style={styles.tipText}>以最晚的打卡为准，后一条签退记录会覆盖前一条</Text>
                 </View>
             </View>
