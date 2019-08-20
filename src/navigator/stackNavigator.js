@@ -1,4 +1,4 @@
-import {createStackNavigator,createAppContainer} from 'react-navigation';
+import {createStackNavigator,createAppContainer, createSwitchNavigator} from 'react-navigation';
 import React from 'react';
 import {View,Image,Text,Button} from 'react-native';
 import TabNav from './tabNavigator';
@@ -10,17 +10,13 @@ import ClockPageDetail from '../views/ClockPages/ClockPageDetail';
 import Login from '../views/Login/Login';
 
 import Colors from '../utils/Colors';
-import StorageUtil from '../utils/storage';
+
 
 import {connect} from 'react-redux';
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers';
 
-let loginStatus ;
-StorageUtil.get('loginToken').then(res => {
-  loginStatus = res ? true : false
-})
 
-const RootNav = createStackNavigator({
+const loginNav = createStackNavigator({
   // Splash: {
   //   screen: Splash,
   //   navigationOptions: {
@@ -33,6 +29,9 @@ const RootNav = createStackNavigator({
       header: null
     }
   },
+})
+
+const MainNav = createStackNavigator({
   Tab: {
     screen: TabNav,
     navigationOptions: {
@@ -55,9 +54,8 @@ const RootNav = createStackNavigator({
     }
   }
 },{
-  lazy:true,
-  initialRouteName: 'Login',
-  // cardStyle: {},
+  // lazy:true,
+  initialRouteName: 'Tab',
   headerMode: 'screen',
   headerBackTitle: null,
   defaultNavigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
@@ -68,24 +66,13 @@ const RootNav = createStackNavigator({
   }
 })
 
-// const defaultGetStateForAction = RootNav.router.getStateForAction;
-// RootNav.router.getStateForAction = (action, state) => {
-//   //页面是Tab并且 global.user.loginState = false || ''（未登录）
-//   console.log(action, state);
-//   if (action.routeName === 'Tab' && !loginStatus) {
-//       let routes = [
-//           ...state.routes,
-//           {key: 'id-'+Date.now(), routeName: 'Login'},
-//       ];
-//       return {
-//           ...state,
-//           routes,
-//           index: routes.length - 1,
-//       };
-//   }
-//   return defaultGetStateForAction(action, state);
-// }
-
+const RootNav = createSwitchNavigator({
+  init: loginNav,
+  main: MainNav
+},{
+  navigationOptions: {
+      header: null,// 可以通过将header设为null 来禁用StackNavigator的Navigation Bar
+  }})
 export const RootNavigator = createAppContainer(RootNav);
 
 /**
@@ -114,7 +101,7 @@ const AppWithNavigationState = createReduxContainer(RootNavigator, 'root');
 const mapStateToProps = state => ({
   state: state.nav,
 });
-export const rootCom = 'Login'
+export const rootCom = 'init'
 /**
  * 3.连接 React 组件与 Redux store
  */

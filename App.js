@@ -7,7 +7,8 @@
 
 import React,{Component} from 'react';
 // import {Text,Image} from 'react-native';
-
+import store from './src/store/index';
+import { Provider } from 'react-redux';
 import AppNavigator from './src/navigator/stackNavigator';
 
 // import RootNav from './src/navigator/tabNavigator';
@@ -15,7 +16,9 @@ import AppNavigator from './src/navigator/stackNavigator';
 export default class App extends Component {
     render() {
         return (
-           <AppNavigator /> 
+            <Provider store={store}>
+                <AppNavigator />
+            </Provider>
         )
     }
 }

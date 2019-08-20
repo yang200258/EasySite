@@ -54,8 +54,8 @@ class Login extends Component {
         let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
         if(res && res.token) {
             let status = await StorageUtil.save('loginToken', res.token)
-            if(status) NavigationUtil.go('Tab')
             this.setLoading(false)
+            if(status) NavigationUtil.resetToHomPage({navigation: this.props.navigation})
         }
     }
     // 忘记密码

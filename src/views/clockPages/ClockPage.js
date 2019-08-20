@@ -51,11 +51,9 @@ class ClockPage extends Component {
         this.setLoading(false)
     }
     setLoading = (val) => {
-        console.log('setLoading',val)
         this.setState({loading: val})
     }
     onRequestClose = () => {
-        console.log('onRequestClose')
         this.setState({loading: false})
     }
     render() {
