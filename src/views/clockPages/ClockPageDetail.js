@@ -5,6 +5,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import ClockDetailContent from '../../components/Clock/ClockDetailContent'
 import Colors from '../../utils/Colors';
 import LoadingIndicator from '../../components/common/LoadingIndicator';
+import BackBase from '../../components/common/BackBase';
+import {NavigationActions} from "react-navigation";
+import {connect} from 'react-redux';
 // 查看设备信息
 import BleManager from 'react-native-ble-manager';
 import axios from '../../utils/request'
@@ -38,6 +41,7 @@ class ClockPageDetail extends Component {
             clockData: [],
             loading: false
         }
+        this.backPress = new BackBase({backPress: this.onBackPress})
         this._handleDiscoverPeripheral = this._handleDiscoverPeripheral.bind(this);
         this._handleStopScan = this._handleStopScan.bind(this);
         this._handleBluetoothUpdateState = this._handleBluetoothUpdateState.bind(this);
@@ -48,7 +52,24 @@ class ClockPageDetail extends Component {
             await this._getClockData()
             this.intervalTime = setInterval(this._setDateTime,1000)
             this._getDeviceInfo()
+            this.backPress.componentDidMount()
         // });
+    }
+    componentWillUnmount() {
+        clearInterval(this.intervalWifi)
+        clearInterval(this.intervalTime)
+        this.handleUpdateState.remove()
+        this.handlerDiscover.remove()
+        this.handlerStop.remove()
+        this.backPress.componentWillUnmount()
+    }
+    onBackPress = () => {
+        const { dispatch, nav } = this.props;
+        if (nav.routes[1].index === 0) {
+            return false;
+        }
+        dispatch(NavigationActions.back());
+        return true;
     }
     _setDateTime = () => {
         this.setState(previousState => {
@@ -58,13 +79,6 @@ class ClockPageDetail extends Component {
             let time = dates.toTimeString().split(' ')[0].split(':') 
             return { time: `${time[0]}:${time[1]}`,date: date }
         });
-    }
-    componentWillUnmount() {
-        clearInterval(this.intervalWifi)
-        clearInterval(this.intervalTime)
-        this.handleUpdateState.remove()
-        this.handlerDiscover.remove()
-        this.handlerStop.remove()
     }
     //获取蓝牙、WIFI列表信息
     _getDeviceInfo = async () => {
@@ -329,5 +343,7 @@ const styles = StyleSheet.create({
         display: 'none'
     }
 })
-
-export default ClockPageDetail
+const mapStateToProps = state => ({
+    nav: state.nav
+})
+export default connect(mapStateToProps)(ClockPageDetail)
