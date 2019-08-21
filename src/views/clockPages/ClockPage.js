@@ -12,7 +12,7 @@ import LoadingIndicator from '../../components/common/LoadingIndicator'
 import BackBase from '../../components/common/BackBase'
 import {NavigationActions} from "react-navigation";
 import {connect} from 'react-redux';
-import SafeAreaViewPlus from '../../components/common/SafeAreaViewPlus'
+// import SafeAreaViewPlus from '../../components/common/SafeAreaViewPlus'
 //获取经纬度
 // import Geolocation from 'react-native-geolocation-service';
 // import Geolocation from "Geolocation"
