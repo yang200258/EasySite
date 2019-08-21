@@ -40,17 +40,8 @@ const MainNav = createStackNavigator({
   },
   ClockPageDetail:{
     screen: ClockPageDetail,
-    navigationOptions: options => {
-      return {
-        // headerTitle: '打卡',
-        // headerTitleStyle: {
-        //   fontSize: 18,
-        //   color: Colors.textColor,
-        //   marginLeft: 0
-        // },
-        // gesturesEnabled: true,
-        header: null
-      }
+    navigationOptions:  {
+      header: null
     }
   }
 },{

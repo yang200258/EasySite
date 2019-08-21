@@ -38,6 +38,7 @@ service.interceptors.response.use(
         return response.data
     },
     async error => {
+        console.log(error.message)
         if (axios.isCancel(error)) {
             console.log('Request canceled', error.message)
             return error.message

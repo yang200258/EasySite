@@ -343,6 +343,7 @@ const styles = StyleSheet.create({
         display: 'none'
     }
 })
+
 const mapStateToProps = state => ({
     nav: state.nav
 })

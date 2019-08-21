@@ -14,7 +14,7 @@ class LoadingIndicator extends Component {
           loadingText: '加载中...',
           background: 'rgba(0,0,0,.5)',
           textColor: '#fff'
-      } 
+      }
     componentDidMount() {
         this.backPress.componentDidMount()
     }
@@ -22,21 +22,16 @@ class LoadingIndicator extends Component {
         this.backPress.componentWillUnmount()
     }
     onBackPress = () => {
-        console.log(this.props)
-        // const { dispatch, nav } = this.props;
-        // if (nav.routes[0].index === 0) {
-        //     return false;
-        // }
         this.props.onRequestClose()
         return false;
     }
     render() {
         let {loading,loadingText,background,textColor} = this.props
-        let navigationBarProps = {hide: true,statusBar: {backgroundColor: loading ? background : textColor,barStyle: loading ? 'light-content' : 'dark-content',hidden: false}}
-        console.log(loading,loadingText,background,textColor);
+        // let navigationBarProps = {hide: true,statusBar: {backgroundColor: loading ? background : textColor,barStyle: loading ? 'light-content' : 'dark-content',hidden: false}}
+        // console.log(loading,loadingText,background,textColor);
         return (
             <View style={[styles.center,styles.poi]}>
-                <NavigationBar {...navigationBarProps} />
+                {/* <NavigationBar {...navigationBarProps} /> */}
                 <Modal
                     animationType='fade'            // 淡入淡出
                     transparent={true}              // 透明
