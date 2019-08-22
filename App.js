@@ -11,9 +11,14 @@ import store from './src/store/index';
 import { Provider } from 'react-redux';
 import AppNavigator from './src/navigator/stackNavigator';
 
-// import RootNav from './src/navigator/tabNavigator';
+import CodePush from "react-native-code-push";
 
-export default class App extends Component {
+class App extends Component {
+    // componentDidMount() {
+    //     CodePush.sync(
+    //         { installMode: CodePush.InstallMode.IMMEDIATE, updateDialog: true },
+    //         );
+    // }
     render() {
         return (
             <Provider store={store}>
@@ -22,4 +27,6 @@ export default class App extends Component {
         )
     }
 }
+
+export default CodePush({ checkFrequency: CodePush.CheckFrequency.MANUAL })(App)
 
