@@ -133,7 +133,9 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "2.0.0"
+        versionName "2.0.1"
+        //./gradlew bundleRelease 时报使用过时api错误
+        // multiDexEnabled true
     }
     splits {
         abi {

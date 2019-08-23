@@ -34,7 +34,8 @@ class Login extends Component {
             res:'',
             isUserFocused: false,
             isPassFocused: false,
-            loading: false
+            loading: false,
+            text: '登录'
         }
     }
     componentDidMount() {
@@ -66,14 +67,18 @@ class Login extends Component {
         if(!this.state.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
         if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
         this.setLoading(true)
+        this.setState({text: '发起登录请求'})
         let {username,password} = this.state
         try {
             let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
             if(res && res.token) {
+                this.setState({text: '成功获取token'})
                 let status = await StorageUtil.save('loginToken', res.token)
                 this.setLoading(false)
-                if(status) NavigationUtil.resetToHomPage({navigation: this.props.navigation})
+                this.setState({text: '准备跳转'})
+                if(status) NavigationUtil.go('Tab')
             } else {
+                this.setState({text: '获取token失败'})
                 this.setLoading(false)
                 //请求返回成功但请求失败
                 console.log(res);
@@ -137,7 +142,7 @@ class Login extends Component {
                             onBlur={() => this.setState({isPassFocused: false})}
                         />
                         <Button style={{marginTop: 40}} dark={true} mode="contained" onPress={() => this.login()} color={Colors.mainColor}>
-                            登录
+                            {this.state.text}
                         </Button>
                         <TouchableRipple 
                             style={{alignSelf: "flex-end",marginTop: 20}}
