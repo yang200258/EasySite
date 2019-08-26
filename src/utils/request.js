@@ -34,6 +34,7 @@ service.interceptors.request.use(
 // 针对响应代码确认跳转到对应页面
 service.interceptors.response.use(
     async response => {
+        response.data.code = 200
         console.log('responsedata', response);
         return response.data
     },
@@ -45,6 +46,8 @@ service.interceptors.response.use(
         } else if (error.response) {
             console.log('请求时错误拦截error', error.response.data)
             return error.response.data
+        } else {
+            return error
         }
     }
 )

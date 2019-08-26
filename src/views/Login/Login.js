@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView,BackHandler,TouchableHighlight } from 'react-native';
+import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView,BackHandler,TouchableHighlight,ScrollView } from 'react-native';
 import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
@@ -35,7 +35,7 @@ class Login extends Component {
             isUserFocused: false,
             isPassFocused: false,
             loading: false,
-            text: '登录'
+            text: ''
         }
     }
     componentDidMount() {
@@ -67,18 +67,18 @@ class Login extends Component {
         if(!this.state.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
         if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
         this.setLoading(true)
-        this.setState({text: '发起登录请求'})
+        this.setState({showTip: true,tipText: '发起登录请求'})
         let {username,password} = this.state
         try {
             let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
             if(res && res.token) {
-                this.setState({text: '成功获取token'})
+                this.setState({showTip: true,tipText: '成功获取token'})
                 let status = await StorageUtil.save('loginToken', res.token)
                 this.setLoading(false)
-                this.setState({text: '准备跳转'})
+                this.setState({showTip: true,tipText: '准备跳转'})
                 if(status) NavigationUtil.go('Tab')
             } else {
-                this.setState({text: '获取token失败'})
+                this.setState({showTip: true,tipText: `获取token失败${JSON.stringify(res)}`,text: JSON.stringify(res)})
                 this.setLoading(false)
                 //请求返回成功但请求失败
                 console.log(res);
@@ -142,7 +142,7 @@ class Login extends Component {
                             onBlur={() => this.setState({isPassFocused: false})}
                         />
                         <Button style={{marginTop: 40}} dark={true} mode="contained" onPress={() => this.login()} color={Colors.mainColor}>
-                            {this.state.text}
+                            登录
                         </Button>
                         <TouchableRipple 
                             style={{alignSelf: "flex-end",marginTop: 20}}
@@ -151,13 +151,14 @@ class Login extends Component {
                             >
                             <Text style={{color:Colors.mainColor}}>忘记密码</Text>
                         </TouchableRipple>
+                        <ScrollView><Text>{this.state.text}</Text></ScrollView>
                     </View>
                     <View style={{flex:1,alignItems: 'center',justifyContent: 'center'}}>
                         <Image
                             source={imageBgEking}
                             resizeMode='cover'
                             style={{width: 70,height:50}}></Image>
-                        <Text style={{alignSelf: 'flex-end',color:'#ccc'}}>v2.0.0</Text>
+                        <Text style={{alignSelf: 'flex-end',color:'#ccc'}}>v2.0.1</Text>
                     </View>
                     <Snackbar
                         duration={500}
