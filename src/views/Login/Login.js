@@ -13,6 +13,7 @@ import NavigationBar from '../../components/common/NavigationBar';
 import BackBase from '../../components/common/BackBase';
 import {NavigationActions} from "react-navigation";
 import {connect} from "react-redux";
+import actions from '../../action/index';
 const theme = {
     colors: {
       ...DefaultTheme.colors,
@@ -27,7 +28,7 @@ class Login extends Component {
         super(props)
         this.backPress = new BackBase({backPress: this.onBackPress})
         this.state = {
-            username:'qqing_yang',
+            username:'',
             password: 'Yy141025',
             showTip: false,
             tipText: '',
@@ -55,8 +56,12 @@ class Login extends Component {
     }
     // 输入用户名事件
     _setUserName = (username) => {
-        // TODO: 验证
-        this.setState({username})
+        const reg = /\w/g
+        let val = username && username.match(reg).length ? username.match(reg).join('') : ''
+        // this.setState({username: val})
+        const {setUsername} = this.props
+        setUsername(val)
+        
     }
     // 输入密码事件
     _setPass = (password)=> {
@@ -64,13 +69,13 @@ class Login extends Component {
     }
     // 登录
     login= async ()=> {
-        if(!this.state.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
+        if(!this.props.account.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
         if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
         this.setLoading(true)
         this.setState({showTip: true,tipText: '发起登录请求'})
-        let {username,password} = this.state
+        let {password} = this.state
         try {
-            let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username,password}})
+            let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username: this.props.account.username,password}})
             if(res && res.token) {
                 this.setState({showTip: true,tipText: '成功获取token'})
                 let status = await StorageUtil.save('loginToken', res.token)
@@ -91,7 +96,7 @@ class Login extends Component {
     _forgetPass= ()=> {
         
     }
-    setLoading = (val) => {
+    setLoading = (val : Boolean) => {
         this.setState({
             loading: val
         })
@@ -114,12 +119,10 @@ class Login extends Component {
                     </View>
                     <View style={{flex:4,flexDirection: 'column'}}>
                         <TextInput
-                            ref={(c) => {this.username = c}}
                             backgroundColor='#fff'
-                            autoCompleteType={'username'}
                             style={[styles.btn,this.state.isUserFocused ? styles.selectColor : null]}
                             // autoFocus={true}
-                            value={this.state.username}
+                            value={this.props.account.username}
                             placeholder={'请输入域账号或手机号'}
                             selectionColor={Colors.mainColor}
                             onChangeText={value => this._setUserName(value)}
@@ -128,11 +131,9 @@ class Login extends Component {
                             onBlur={() => this.setState({isUserFocused: false})}
                         />
                         <TextInput
-                            ref={(c) => {this.password = c}}
                             backgroundColor='#fff'
                             secureTextEntry={true}
                             style={[styles.btn,this.state.isPassFocused ? styles.selectColor : null]}
-                            autoCompleteType='password'
                             value={this.state.password}
                             placeholder={'请输入密码'}
                             selectionColor={Colors.mainColor}
@@ -186,6 +187,12 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    nav: state.nav
+    nav: state.nav,
+    account: state.account
 })
-export default connect(mapStateToProps)(Login)
+const mapDispatchToProps = dispatch => {
+    return {
+        setUsername: username =>dispatch(actions.setUsername(username))
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Login)

@@ -1,3 +1,4 @@
 export default {
-    SET_ACCOUNT: 'SET_ACCOUNT'
+    SET_USERNAME: 'SET_USERNAME',
+    
 }

@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux'
 import {rootCom, RootNavigator} from '../navigator/stackNavigator';
 import StorageUtil from '../utils/storage';
+import Account from './account';
 
 let loginStatus ;
 StorageUtil.get('loginToken').then(res => {
@@ -43,6 +44,7 @@ const navReducer = (state = navState, action) => {
  */
     const index = combineReducers({
         nav: navReducer,
+        account: Account
     });
     
 export default index;

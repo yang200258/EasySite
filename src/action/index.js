@@ -1,6 +1,6 @@
-import {setAccount} from './account'
+import {setUsername} from './account'
 
 
 export default {
-    setAccount
+    setUsername
 }
