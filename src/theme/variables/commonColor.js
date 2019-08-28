@@ -2,7 +2,7 @@
 
 import color from 'color';
 import { Platform, Dimensions, PixelRatio } from 'react-native';
-
+import Colors from '../../utils/Colors'
 export const PLATFORM = {
   ANDROID: 'android',
   IOS: 'ios',
@@ -130,7 +130,7 @@ export default {
   checkboxTickColor: '#fff',
 
   // Color
-  brandPrimary: platform === PLATFORM.IOS ? '#007aff' : '#3F51B5',
+  brandPrimary: platform === PLATFORM.IOS ? '#007aff' : Colors.mainColor,
   brandInfo: '#62B1F6',
   brandSuccess: '#5cb85c',
   brandDanger: '#d9534f',

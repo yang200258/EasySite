@@ -28,7 +28,7 @@ class Login extends Component {
         super(props)
         this.backPress = new BackBase({backPress: this.onBackPress})
         this.state = {
-            username:'',
+            // username:'',
             password: 'Yy141025',
             showTip: false,
             tipText: '',
@@ -57,7 +57,7 @@ class Login extends Component {
     // 输入用户名事件
     _setUserName = (username) => {
         const reg = /\w/g
-        let val = username && username.match(reg).length ? username.match(reg).join('') : ''
+        let val = username.match(reg) && username.match(reg).length ? username.match(reg).join('') : ''
         // this.setState({username: val})
         const {setUsername} = this.props
         setUsername(val)
@@ -106,6 +106,7 @@ class Login extends Component {
     }
     render() {
         NavigationUtil.navigation = this.props.navigation
+        console.log(this.props.account.username)
         return (
             <KeyboardAvoidingView style={{flex:1}}>
                 <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} />

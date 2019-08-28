@@ -1,7 +1,7 @@
 import Types from '../../action/types';
 
 const defaultState = {
-    username: '',
+    username: 'qqing_yang',
     clockToken: '',
     loginToken: ''
 }
