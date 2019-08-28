@@ -8,7 +8,7 @@ import ClockPage from '../views/ClockPages/ClockPage';
 import ClockPageDetail from '../views/ClockPages/ClockPageDetail';
 // import Splash from '../views/Splash/Splash';
 import Login from '../views/Login/Login';
-
+import ForgetPass from '../views/Login/ForgetPass'
 import Colors from '../utils/Colors';
 
 
@@ -25,6 +25,12 @@ const loginNav = createStackNavigator({
   // },
   Login: {
     screen: Login,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ForgetPass: {
+    screen: ForgetPass,
     navigationOptions: {
       header: null
     }

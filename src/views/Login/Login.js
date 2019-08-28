@@ -94,7 +94,7 @@ class Login extends Component {
     }
     // 忘记密码
     _forgetPass= ()=> {
-        
+        NavigationUtil.go('ForgetPass')
     }
     setLoading = (val : Boolean) => {
         this.setState({
@@ -192,7 +192,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => {
     return {
-        setUsername: username =>dispatch(actions.setUsername(username))
+        setUsername: username => dispatch(actions.setUsername(username))
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Login)

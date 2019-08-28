@@ -9,26 +9,23 @@ import React,{Component} from 'react';
 // import {Text,Image} from 'react-native';
 import store from './src/store/index';
 import { Provider } from 'react-redux';
-import AppNavigator from './src/navigator/stackNavigator';
-
+// import AppNavigator from './src/navigator/stackNavigator';
+import SetUp from './src/boot/SetUp.js'
 import CodePush from "react-native-code-push";
 
+
 class App extends Component {
-    // componentDidMount() {
-    //     CodePush.sync(
-    //         { installMode: CodePush.InstallMode.IMMEDIATE, updateDialog: true },
-    //         );
-    // }
     render() {
         return (
             <Provider store={store}>
-                <AppNavigator />
+                <SetUp />
             </Provider>
         )
     }
 }
 
 let options = { checkFrequency: CodePush.CheckFrequency.MANUAL }
-export default App
-// export default CodePush(App)
+
+// export default App
+export default CodePush(App)
 
