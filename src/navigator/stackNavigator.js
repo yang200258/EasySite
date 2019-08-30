@@ -2,7 +2,7 @@ import {createStackNavigator,createAppContainer, createSwitchNavigator} from 're
 import React from 'react';
 import {View,Image,Text,Button} from 'react-native';
 import TabNav from './tabNavigator';
-
+import { Root } from "native-base";
 
 import ClockPage from '../views/ClockPages/ClockPage';
 import ClockPageDetail from '../views/ClockPages/ClockPageDetail';
@@ -108,5 +108,10 @@ const AppNavigator = connect(mapStateToProps)(AppWithNavigationState);
 
 
 
-export default AppNavigator
+// export default AppNavigator
+// eslint-disable-next-line react/display-name
+export default () =>
+  <Root>
+    <AppNavigator />
+  </Root>;
 

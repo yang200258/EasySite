@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Text,View,TouchableOpacity,Alert,StyleSheet,Image,StatusBar,KeyboardAvoidingView,BackHandler,TouchableHighlight,ScrollView } from 'react-native';
-import { TextInput,DefaultTheme,Button,TouchableRipple,Snackbar  } from 'react-native-paper';
+import { TextInput,DefaultTheme,Button,TouchableRipple  } from 'react-native-paper';
+import{Toast} from 'native-base';
 import Colors from '../../utils/Colors';
 import axios from '../../utils/request';
 import StorageUtil from '../../utils/storage';
@@ -31,7 +32,6 @@ class Login extends Component {
             // username:'',
             password: 'Yy141025',
             showTip: false,
-            tipText: '',
             res:'',
             isUserFocused: false,
             isPassFocused: false,
@@ -61,7 +61,6 @@ class Login extends Component {
         // this.setState({username: val})
         const {setUsername} = this.props
         setUsername(val)
-        
     }
     // 输入密码事件
     _setPass = (password)=> {
@@ -69,21 +68,39 @@ class Login extends Component {
     }
     // 登录
     login= async ()=> {
-        if(!this.props.account.username) return this.setState({showTip: true,tipText: 'EasySite：请输入域账号或手机号'})
-        if(!this.state.password) return this.setState({showTip: true,tipText: 'EasySite：请输入密码'})
+        console.log(this.props.account.username,this.state.password)
+        if(this.props.account.username == '') {
+            Toast.show({
+                text: '请输入域账号或手机号',
+                buttonText: null,
+                textStyle: {textAlign: 'center'},
+                style: {position: 'absolute',bottom: 30}
+            })
+            return
+        }
+        if(this.state.password == '') {
+            return Toast.show({
+                text: '请输入密码',
+                buttonText: null,
+                textStyle: {textAlign: 'center'},
+                style: {position: 'absolute',bottom: 30},
+            })
+        }
         this.setLoading(true)
-        this.setState({showTip: true,tipText: '发起登录请求'})
         let {password} = this.state
         try {
             let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username: this.props.account.username,password}})
             if(res && res.token) {
-                this.setState({showTip: true,tipText: '成功获取token'})
                 let status = await StorageUtil.save('loginToken', res.token)
                 this.setLoading(false)
-                this.setState({showTip: true,tipText: '准备跳转'})
                 if(status) NavigationUtil.go('Tab')
             } else {
-                this.setState({showTip: true,tipText: `获取token失败${JSON.stringify(res)}`,text: JSON.stringify(res)})
+                Toast.show({
+                    text: `登录错误：${JSON.stringify(res)}`,
+                    buttonText: null,
+                    type: 'warning',
+                    duration: 1500,
+                })
                 this.setLoading(false)
                 //请求返回成功但请求失败
                 console.log(res);
@@ -106,11 +123,9 @@ class Login extends Component {
     }
     render() {
         NavigationUtil.navigation = this.props.navigation
-        console.log(this.props.account.username)
         return (
             <KeyboardAvoidingView style={{flex:1}}>
                 <LoadingIndicator loading={this.state.loading} onRequestClose={this.onRequestClose} />
-                {/* <TouchableHighlight> */}
                 <View style={{paddingHorizontal: 30,flex:1}}>
                     <View style={{flex:1,alignItems: 'center',justifyContent: 'center'}}>
                         <Image
@@ -162,15 +177,14 @@ class Login extends Component {
                             style={{width: 70,height:50}}></Image>
                         <Text style={{alignSelf: 'flex-end',color:'#ccc'}}>v2.0.1</Text>
                     </View>
-                    <Snackbar
+                    {/* <Snackbar
                         duration={500}
                         visible={this.state.showTip}
                         onDismiss={() => this.setState({ showTip: false })}
                     >
                         {this.state.tipText}
-                    </Snackbar>
+                    </Snackbar> */}
                 </View>
-                {/* </TouchableHighlight> */}
             </KeyboardAvoidingView>
         )
     }

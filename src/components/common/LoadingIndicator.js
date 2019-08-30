@@ -27,11 +27,8 @@ class LoadingIndicator extends Component {
     }
     render() {
         let {loading,loadingText,background,textColor} = this.props
-        // let navigationBarProps = {hide: true,statusBar: {backgroundColor: loading ? background : textColor,barStyle: loading ? 'light-content' : 'dark-content',hidden: false}}
-        // console.log(loading,loadingText,background,textColor);
         return (
             <View style={[styles.center,styles.poi]}>
-                {/* <NavigationBar {...navigationBarProps} /> */}
                 <Modal
                     animationType='fade'            // 淡入淡出
                     transparent={true}              // 透明
