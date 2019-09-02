@@ -21,16 +21,7 @@ service.interceptors.request.use(
         if (token) {
             config.headers['x-token'] = token
         }
-        // config.headers['Pragma'] = 'no-cache'
-        // config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate',
         console.log('config', config);
-        await Toast.show({
-            text: '请求config' + JSON.stringify(config),
-            buttonText: null,
-            duration: 50000,
-            textStyle: {textAlign: 'center'},
-            style: {position: 'absolute',bottom: 30}
-        })
         return config
     },
     async err => {
@@ -45,21 +36,9 @@ service.interceptors.response.use(
     async response => {
         response.data.code = 200
         console.log('responsedata', response);
-        // Toast.show({
-        //     text: JSON.stringify(response),
-        //     buttonText: null,
-        //     textStyle: {textAlign: 'center'},
-        //     style: {position: 'absolute',bottom: 30}
-        // })
         return response.data
     },
     async error => {
-        // Toast.show({
-        //     text: JSON.stringify(error),
-        //     buttonText: null,
-        //     textStyle: {textAlign: 'center'},
-        //     style: {position: 'absolute',bottom: 30}
-        // })
         console.log(error.message)
         if (axios.isCancel(error)) {
             console.log('Request canceled', error.message)

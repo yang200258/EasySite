@@ -89,22 +89,48 @@ class Login extends Component {
         this.setLoading(true)
         let {password} = this.state
         try {
-            let res = await axios({url: '/sys/accounts/login',method: 'post',data: {username: this.props.account.username,password}})
-            if(res && res.token) {
-                let status = await StorageUtil.save('loginToken', res.token)
-                this.setLoading(false)
-                if(status) NavigationUtil.go('Tab')
-            } else {
-                Toast.show({
-                    text: `登录错误：${JSON.stringify(res)}`,
-                    buttonText: null,
-                    type: 'warning',
-                    duration: 1500,
+            // let res = await axios({url: '/sys/accounts/login',method: 'POST',data: {username: this.props.account.username,password}})
+            // if(res && res.token) {
+            //     let status = await StorageUtil.save('loginToken', res.token)
+            //     this.setLoading(false)
+            //     if(status) NavigationUtil.go('Tab')
+            // } else {
+            //     Toast.show({
+            //         text: JSON.stringify(res),
+            //         buttonText: null,
+            //         type: 'warning',
+            //         duration: 1500,
+            //     })
+            //     this.setLoading(false)
+            //     //请求返回成功但请求失败
+            //     console.log(res);
+            // }
+            fetch('http://10.28.128.123:8080/sys/accounts/login', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: this.props.account.username,password:password
+                }),
+                }).then((response) => response.json())
+                .then((responseJson) => {
+                    Toast.show({
+                        text: JSON.stringify(responseJson),
+                        buttonText: null,
+                        duration: 1500,
+                    })
                 })
-                this.setLoading(false)
-                //请求返回成功但请求失败
-                console.log(res);
-            }
+                .catch((error) => {
+                    Toast.show({
+                        text: JSON.stringify(error),
+                        buttonText: null,
+                        type: 'warning',
+                        duration: 1500,
+                    })
+                  console.error(error);
+                });
         } catch(err) {
             console.log(err);
         }
