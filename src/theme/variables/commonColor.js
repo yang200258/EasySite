@@ -131,7 +131,7 @@ export default {
 
   // Color
   brandPrimary: platform === PLATFORM.IOS ? '#007aff' : Colors.mainColor,
-  brandInfo: '#62B1F6',
+  brandInfo: '#fff',
   brandSuccess: '#5cb85c',
   brandDanger: '#d9534f',
   brandWarning: '#f0ad4e',

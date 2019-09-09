@@ -4,8 +4,8 @@ import {View,Image,Text,Button} from 'react-native';
 import TabNav from './tabNavigator';
 import { Root } from "native-base";
 
-import ClockPage from '../views/ClockPages/ClockPage';
 import ClockPageDetail from '../views/ClockPages/ClockPageDetail';
+import AboutUs from '../views/Mine/AboutUs'
 // import Splash from '../views/Splash/Splash';
 import Login from '../views/Login/Login';
 import ForgetPass from '../views/Login/ForgetPass'
@@ -46,6 +46,12 @@ const MainNav = createStackNavigator({
   },
   ClockPageDetail:{
     screen: ClockPageDetail,
+    navigationOptions:  {
+      header: null
+    }
+  },
+  AboutUs:{
+    screen: AboutUs,
     navigationOptions:  {
       header: null
     }
