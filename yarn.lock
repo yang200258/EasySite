@@ -949,11 +949,6 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/geolocation/download/@react-native-community/geolocation-1.4.2.tgz#7228c6d37c2f55017af9c49c2b9ad586d9bcb9f8"
   integrity sha1-cijG03wvVQF6+cScK5rVhtm8ufg=
 
-"@react-native-community/netinfo@^4.1.4":
-  version "4.1.4"
-  resolved "https://registry.npm.taobao.org/@react-native-community/netinfo/download/@react-native-community/netinfo-4.1.4.tgz#512be0395bab6f2432c6e26d7a00ace3c78e05ff"
-  integrity sha1-USvgOVurbyQyxuJtegCs48eOBf8=
-
 "@react-navigation/core@~3.4.1":
   version "3.4.2"
   resolved "https://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-3.4.2.tgz#bec563e94fde40fbab3730cdc97f22afbb2a1498"
@@ -2173,9 +2168,9 @@ decamelize@^1.1.1, decamelize@^1.2.0:
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npm.taobao.org/decode-uri-component/download/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 deep-extend@^0.6.0:
   version "0.6.0"
